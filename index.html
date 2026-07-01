@@ -7,7 +7,7 @@
   <style>
     :root {
       color-scheme: light;
-      font-family: Inter, Arial, sans-serif;
+      font-family: Inter, Arial, sans-serif;	
       background: #0f172a;
       color: #fff;
     }
@@ -355,13 +355,112 @@
       return map[code] || { start: '00:00', end: '23:59' };
     }
 
+    function getShiftCodeByTime() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const timeInMinutes = hours * 60 + minutes;
+
+      const shifts = [
+        { code: 'A', start: 480, end: 1020 },    // 08:00-17:00
+        { code: 'B', start: 780, end: 1320 },    // 13:00-22:00
+        { code: 'C', start: 1320, end: 480 },    // 22:00-08:00 (wraps midnight)
+        { code: 'G', start: 600, end: 1140 }     // 10:00-19:00
+      ];
+
+      let activeShifts = [];
+
+      for (let shift of shifts) {
+        let isActive = false;
+        if (shift.code === 'C') {
+          isActive = timeInMinutes >= shift.start || timeInMinutes < shift.end;
+        } else {
+          isActive = timeInMinutes >= shift.start && timeInMinutes < shift.end;
+        }
+        if (isActive) {
+          activeShifts.push(shift);
+        }
+      }
+
+      if (activeShifts.length === 0) return 'A';
+      if (activeShifts.length === 1) return activeShifts[0].code;
+
+      // Multiple active shifts - pick most recently started
+      let mostRecentShift = activeShifts[0];
+      let mostRecentStart = mostRecentShift.code === 'C' && timeInMinutes < 480 
+        ? 1320 + 1440
+        : mostRecentShift.start;
+
+      for (let shift of activeShifts) {
+        let startTime = shift.code === 'C' && timeInMinutes < 480
+          ? shift.start + 1440
+          : shift.start;
+        if (startTime > mostRecentStart) {
+          mostRecentStart = startTime;
+          mostRecentShift = shift;
+        }
+      }
+
+      return mostRecentShift.code;
+    }
+
+    function getShiftCodeByTime() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const timeInMinutes = hours * 60 + minutes;
+
+      const shifts = [
+        { code: 'A', start: 480, end: 1020 },    // 08:00-17:00
+        { code: 'B', start: 780, end: 1320 },    // 13:00-22:00
+        { code: 'C', start: 1320, end: 480 },    // 22:00-08:00 (wraps midnight)
+        { code: 'G', start: 600, end: 1140 }     // 10:00-19:00
+      ];
+
+      let activeShifts = [];
+
+      for (let shift of shifts) {
+        let isActive = false;
+        if (shift.code === 'C') {
+          isActive = timeInMinutes >= shift.start || timeInMinutes < shift.end;
+        } else {
+          isActive = timeInMinutes >= shift.start && timeInMinutes < shift.end;
+        }
+        if (isActive) {
+          activeShifts.push(shift);
+        }
+      }
+
+      if (activeShifts.length === 0) return 'A';
+      if (activeShifts.length === 1) return activeShifts[0].code;
+
+      // Multiple active shifts - pick most recently started
+      let mostRecentShift = activeShifts[0];
+      let mostRecentStart = mostRecentShift.code === 'C' && timeInMinutes < 480 
+        ? 1320 + 1440
+        : mostRecentShift.start;
+
+      for (let shift of activeShifts) {
+        let startTime = shift.code === 'C' && timeInMinutes < 480
+          ? shift.start + 1440
+          : shift.start;
+        if (startTime > mostRecentStart) {
+          mostRecentStart = startTime;
+          mostRecentShift = shift;
+        }
+      }
+
+      return mostRecentShift.code;
+    }
+
     function showEmployeeDetail(name) {
       const entry = getDirectoryEntry(name);
       if (!entry) return;
 
       const now = new Date();
       const todayDate = now.toISOString().slice(0, 10);
-      const shiftWindow = getShiftWindow(entry.shiftCode);
+      const shiftCode = getShiftCodeByTime();
+      const shiftWindow = getShiftWindow(shiftCode);
 
       employeeDetail.innerHTML = `
         <div class="employee-detail">
@@ -375,7 +474,7 @@
           </div>
           <div class="employee-detail-row">
             <span class="detail-label">Shift Code</span>
-            <span class="detail-value">${entry.shiftCode}</span>
+            <span class="detail-value">${shiftCode}</span>
           </div>
           <div class="employee-detail-row">
             <span class="detail-label">Shift Time</span>
@@ -533,6 +632,7 @@
         showMessage(saveMessage, `✓ Clock-out recorded at ${nowTime}`);
       } else {
         // Create new record with In time
+        const timeBasedShiftCode = getShiftCodeByTime();
         const newRecord = {
           name,
           userId: entry.id,
@@ -540,7 +640,7 @@
           mode: 'Employee',
           type: 'In',
           date: todayDate,
-          shiftCode: entry.shiftCode,
+          shiftCode: timeBasedShiftCode,
           inTime: nowTime,
           outTime: '—',
           notes: 'Auto-recorded via staff portal',
