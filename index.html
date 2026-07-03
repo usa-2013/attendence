@@ -7,7 +7,7 @@
   <style>
     :root {
       color-scheme: light;
-      font-family: Inter, Arial, sans-serif;	
+      font-family: Inter, Arial, sans-serif;
       background: #0f172a;
       color: #fff;
     }
@@ -18,7 +18,7 @@
       background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     }
     .container {
-      max-width: 800px;
+      max-width: 600px;
       margin: 0 auto;
       padding: 20px;
       min-height: 100vh;
@@ -28,7 +28,7 @@
     }
     .header {
       text-align: center;
-      margin-bottom: 20px;
+      margin-bottom: 32px;
     }
     .header h1 {
       margin: 0 0 8px;
@@ -56,8 +56,7 @@
     }
     input,
     select,
-    button,
-    textarea {
+    button {
       width: 100%;
       border: 1px solid #475569;
       border-radius: 12px;
@@ -68,10 +67,8 @@
       font-family: inherit;
       margin-bottom: 14px;
     }
-    textarea { min-height: 120px; resize: vertical; }
     input:focus,
-    select:focus,
-    textarea:focus {
+    select:focus {
       outline: none;
       border-color: #4338ca;
       box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
@@ -92,15 +89,27 @@
       transform: translateY(-2px);
       box-shadow: 0 10px 25px rgba(67, 56, 202, 0.2);
     }
-    button:active { transform: translateY(0); }
-    .btn-row { display:flex; gap:12px; flex-wrap:wrap; }
-    .btn-row button { flex:1 1 auto; min-width:120px; }
-    button.secondary { background: #475569; }
-    button.secondary:hover { background: #64748b; }
-    button.success { background: #22c55e; }
-    button.success:hover { background: #16a34a; }
-    button.danger { background: #dc2626; }
-    button.danger:hover { background: #b91c1c; }
+    button:active {
+      transform: translateY(0);
+    }
+    button.secondary {
+      background: #475569;
+    }
+    button.secondary:hover {
+      background: #64748b;
+    }
+    button.success {
+      background: #22c55e;
+    }
+    button.success:hover {
+      background: #16a34a;
+    }
+    button.danger {
+      background: #dc2626;
+    }
+    button.danger:hover {
+      background: #b91c1c;
+    }
     .success {
       border-left: 4px solid #22c55e;
       background: rgba(34, 197, 94, 0.1);
@@ -137,14 +146,18 @@
       object-fit: cover;
       display: none;
     }
-    #videoPreview { aspect-ratio: 1; }
+    #videoPreview {
+      aspect-ratio: 1;
+    }
     #selfiePreview {
       aspect-ratio: 1;
       cursor: pointer;
       border: 2px solid #475569;
       transition: border-color 0.2s;
     }
-    #selfiePreview:hover { border-color: #4338ca; }
+    #selfiePreview:hover {
+      border-color: #4338ca;
+    }
     .info-box {
       background: rgba(67, 56, 202, 0.1);
       border: 1px solid #4338ca;
@@ -182,16 +195,29 @@
       padding: 8px 0;
       border-bottom: 1px solid rgba(67, 56, 202, 0.3);
     }
-    .employee-detail-row:last-child { border-bottom: none; }
-    .detail-label { color: #94a3b8; font-weight: 500; }
-    .detail-value { color: #f1f5f9; font-weight: 600; }
-    .footer { text-align: center; color: #64748b; font-size: 0.85rem; margin-top: 20px; }
-    a { color: #4338ca; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .admin-section { margin-top: 16px; background: rgba(71,85,105,0.06); padding:12px; border-radius:12px; }
-    .muted { color:#94a3b8; font-size:0.9rem; margin-bottom:8px; }
-    @media (min-width:900px) {
-      .btn-row button { max-width:180px; }
+    .employee-detail-row:last-child {
+      border-bottom: none;
+    }
+    .detail-label {
+      color: #94a3b8;
+      font-weight: 500;
+    }
+    .detail-value {
+      color: #f1f5f9;
+      font-weight: 600;
+    }
+    .footer {
+      text-align: center;
+      color: #64748b;
+      font-size: 0.85rem;
+      margin-top: 20px;
+    }
+    a {
+      color: #4338ca;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
@@ -228,39 +254,8 @@
         <div class="step-indicator active">✓ Selfie Captured</div>
         <img id="selfiePreview" alt="Selfie preview" title="Click to view employee details" />
         <div id="employeeDetail"></div>
-        <div class="btn-row">
-          <button type="button" id="confirmAttendance" class="success">✓ Confirm Attendance</button>
-          <button type="button" id="retakePhoto" class="secondary">↻ Retake Photo</button>
-        </div>
-      </div>
-
-      <!-- Admin / Import area: allows uploading/pasting/fetching staff data -->
-      <div class="admin-section" id="adminSection">
-        <div class="muted">Admin: Import staff directory (CSV or JSON), fetch from URL, export or print directory/records.</div>
-
-        <label for="fileInput">Upload file (CSV or JSON)</label>
-        <input type="file" id="fileInput" accept=".csv,application/json,text/csv" />
-
-        <label for="pasteJson">Paste JSON array of staff (example: [{"name":"X","id":"ID","password":"PW","shiftCode":"A"}])</label>
-        <textarea id="pasteJson" placeholder='Paste JSON here and click "Load Pasted JSON"'></textarea>
-        <div class="btn-row">
-          <button type="button" id="loadPastedJson">Load Pasted JSON</button>
-          <button type="button" id="clearDirectory" class="danger">Clear Directory</button>
-        </div>
-
-        <label for="fetchUrl">Fetch remote JSON/CSV (CORS required)</label>
-        <input type="url" id="fetchUrl" placeholder="https://example.com/staff.json or staff.csv" />
-        <div class="btn-row">
-          <button type="button" id="fetchRemote">Fetch & Load</button>
-          <button type="button" id="exportJson">Export Directory (JSON)</button>
-        </div>
-
-        <div style="margin-top:8px;" class="btn-row">
-          <button type="button" id="printDirectory" class="secondary">Print Directory</button>
-          <button type="button" id="printRecords" class="secondary">Print Attendance Records</button>
-        </div>
-
-        <div class="muted" style="margin-top:8px;">Notes: CSV should have headers: name,id,password,shiftCode (order not strict). Remote fetch requires the remote server to allow CORS.</div>
+        <button type="button" id="confirmAttendance" class="success">✓ Confirm Attendance</button>
+        <button type="button" id="retakePhoto" class="secondary">↻ Retake Photo</button>
       </div>
     </div>
 
@@ -271,7 +266,6 @@
   </div>
 
   <script>
-    /* ===== data and DOM references ===== */
     const defaultDirectory = [
       { name: 'Mr. Chandrapal', id: 'CH001', password: 'CH001', shiftCode: 'A' },
       { name: 'Mr. Shrichand', id: 'SH002', password: 'SH002', shiftCode: 'A' },
@@ -305,32 +299,12 @@
     const warningMessage = document.getElementById('warningMessage');
     const errorMessage = document.getElementById('errorMessage');
 
-    const fileInput = document.getElementById('fileInput');
-    const pasteJson = document.getElementById('pasteJson');
-    const loadPastedJson = document.getElementById('loadPastedJson');
-    const fetchUrl = document.getElementById('fetchUrl');
-    const fetchRemote = document.getElementById('fetchRemote');
-    const exportJson = document.getElementById('exportJson');
-    const printDirectoryBtn = document.getElementById('printDirectory');
-    const printRecordsBtn = document.getElementById('printRecords');
-    const clearDirectoryBtn = document.getElementById('clearDirectory');
-
     let selfieDataURL = '';
     let activeStream = null;
 
-    /* ===== localStorage helpers ===== */
     function getStoredDirectory() {
       const saved = localStorage.getItem('employeeDirectory');
-      try {
-        return saved ? JSON.parse(saved) : defaultDirectory;
-      } catch (e) {
-        return defaultDirectory;
-      }
-    }
-
-    function setStoredDirectory(dir) {
-      localStorage.setItem('employeeDirectory', JSON.stringify(dir));
-      populateEmployees();
+      return saved ? JSON.parse(saved) : defaultDirectory;
     }
 
     function getDirectoryEntry(name) {
@@ -352,7 +326,6 @@
       localStorage.setItem('attendanceRecords', JSON.stringify(records));
     }
 
-    /* ===== UI helpers ===== */
     function populateEmployees() {
       const directory = getStoredDirectory();
       employeeName.innerHTML = '<option value="">-- Select your name --</option>';
@@ -372,7 +345,6 @@
       }, 4500);
     }
 
-    /* ===== shift logic ===== */
     function getShiftWindow(code) {
       const map = {
         A: { start: '08:00', end: '17:00' },
@@ -381,6 +353,55 @@
         G: { start: '10:00', end: '19:00' }
       };
       return map[code] || { start: '00:00', end: '23:59' };
+    }
+
+    function getShiftCodeByTime() {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const timeInMinutes = hours * 60 + minutes;
+
+      const shifts = [
+        { code: 'A', start: 480, end: 1020 },    // 08:00-17:00
+        { code: 'B', start: 780, end: 1320 },    // 13:00-22:00
+        { code: 'C', start: 1320, end: 480 },    // 22:00-08:00 (wraps midnight)
+        { code: 'G', start: 600, end: 1140 }     // 10:00-19:00
+      ];
+
+      let activeShifts = [];
+
+      for (let shift of shifts) {
+        let isActive = false;
+        if (shift.code === 'C') {
+          isActive = timeInMinutes >= shift.start || timeInMinutes < shift.end;
+        } else {
+          isActive = timeInMinutes >= shift.start && timeInMinutes < shift.end;
+        }
+        if (isActive) {
+          activeShifts.push(shift);
+        }
+      }
+
+      if (activeShifts.length === 0) return 'A';
+      if (activeShifts.length === 1) return activeShifts[0].code;
+
+      // Multiple active shifts - pick most recently started
+      let mostRecentShift = activeShifts[0];
+      let mostRecentStart = mostRecentShift.code === 'C' && timeInMinutes < 480 
+        ? 1320 + 1440
+        : mostRecentShift.start;
+
+      for (let shift of activeShifts) {
+        let startTime = shift.code === 'C' && timeInMinutes < 480
+          ? shift.start + 1440
+          : shift.start;
+        if (startTime > mostRecentStart) {
+          mostRecentStart = startTime;
+          mostRecentShift = shift;
+        }
+      }
+
+      return mostRecentShift.code;
     }
 
     function getShiftCodeByTime() {
@@ -467,7 +488,6 @@
       `;
     }
 
-    /* ===== camera / selfie ===== */
     function stopCamera() {
       if (activeStream) {
         activeStream.getTracks().forEach(track => track.stop());
@@ -497,7 +517,7 @@
         image.onload = () => {
           const canvas = document.createElement('canvas');
           const width = 160;
-          const height = Math.round((image.height / image.width) * 160) || 160;
+          const height = Math.round((image.height / image.width) * 160);
           canvas.width = width;
           canvas.height = height;
           const ctx = canvas.getContext('2d');
@@ -521,7 +541,6 @@
       return Math.abs(currentScore - storedScore) < 2000000;
     }
 
-    /* ===== flow events ===== */
     employeeName.addEventListener('change', () => {
       if (employeeName.value) {
         const entry = getDirectoryEntry(employeeName.value);
@@ -557,14 +576,15 @@
 
     takeSelfie.addEventListener('click', async () => {
       const canvas = document.createElement('canvas');
-      canvas.width = videoPreview.videoWidth || 640;
-      canvas.height = videoPreview.videoHeight || 480;
+      canvas.width = videoPreview.videoWidth;
+      canvas.height = videoPreview.videoHeight;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(videoPreview, 0, 0, canvas.width, canvas.height);
       selfieDataURL = canvas.toDataURL('image/jpeg', 0.8);
       
       stopCamera();
       
+      // Auto-validate and save attendance
       const name = employeeName.value;
       const entry = getDirectoryEntry(name);
 
@@ -583,6 +603,7 @@
         return;
       }
 
+      // Validate photo match
       const match = await compareSelfies(selfieDataURL, storedProfile.photo);
       
       if (!match) {
@@ -674,7 +695,7 @@
         return;
       }
 
-      // Save attendance similarly to the capture handler
+      // Get today's attendance data
       const now = new Date();
       const todayDate = now.toISOString().slice(0, 10);
       const nowTime = now.toTimeString().slice(0, 5);
@@ -685,10 +706,12 @@
       );
 
       if (todayRecord) {
+        // Update with Out time
         todayRecord.outTime = nowTime;
         todayRecord.photo = selfieDataURL;
         showMessage(saveMessage, `✓ Clock-out recorded at ${nowTime}`);
       } else {
+        // Create new record with In time
         const newRecord = {
           name,
           userId: entry.id,
@@ -738,210 +761,758 @@
     setInterval(updateClock, 1000);
 
     populateEmployees();
-
-    /* ===== Admin: import/export/print helpers ===== */
-
-    function parseCSV(text) {
-      // Very small CSV parser: split lines, use first row as headers
-      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
-      if (lines.length === 0) return [];
-      const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-      const rows = [];
-      for (let i = 1; i < lines.length; i++) {
-        const cols = lines[i].split(',').map(c => c.trim());
-        const obj = {};
-        for (let j = 0; j < headers.length; j++) {
-          const key = headers[j];
-          obj[key] = cols[j] || '';
-        }
-        // normalize keys to name,id,password,shiftCode
-        rows.push({
-          name: obj.name || obj.fullname || obj.employee || '',
-          id: obj.id || obj.userId || obj.userid || obj.user_id || '',
-          password: obj.password || obj.pw || '',
-          shiftCode: (obj.shiftcode || obj.shift || obj.shift_code || 'A').toUpperCase()
-        });
-      }
-      return rows;
-    }
-
-    function normalizeDirectory(arr) {
-      return arr.map(item => {
-        return {
-          name: (item.name || item.Name || '').toString(),
-          id: (item.id || item.userId || item.userID || item.ID || '').toString(),
-          password: (item.password || item.pw || item.pass || '').toString(),
-          shiftCode: (item.shiftCode || item.shift || 'A').toString().toUpperCase()
-        };
-      }).filter(e => e.name && e.id);
-    }
-
-    fileInput.addEventListener('change', async (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const text = await file.text();
-      let dir = [];
-      if (file.type.includes('json') || file.name.endsWith('.json')) {
-        try {
-          const parsed = JSON.parse(text);
-          if (Array.isArray(parsed)) dir = normalizeDirectory(parsed);
-          else showMessage(errorMessage, 'JSON must be an array of staff objects');
-        } catch (err) {
-          showMessage(errorMessage, 'Invalid JSON file');
-          return;
-        }
-      } else {
-        // treat as CSV
-        dir = parseCSV(text);
-      }
-      if (dir.length === 0) {
-        showMessage(warningMessage, 'No valid staff found in file');
-        return;
-      }
-      setStoredDirectory(dir);
-      showMessage(saveMessage, `Loaded ${dir.length} staff from file`);
-      fileInput.value = '';
-    });
-
-    loadPastedJson.addEventListener('click', () => {
-      const text = pasteJson.value.trim();
-      if (!text) {
-        showMessage(warningMessage, 'Paste JSON first');
-        return;
-      }
-      try {
-        const parsed = JSON.parse(text);
-        if (!Array.isArray(parsed)) {
-          showMessage(errorMessage, 'JSON must be an array of staff objects');
-          return;
-        }
-        const dir = normalizeDirectory(parsed);
-        if (dir.length === 0) {
-          showMessage(warningMessage, 'No valid staff entries found');
-          return;
-        }
-        setStoredDirectory(dir);
-        showMessage(saveMessage, `Loaded ${dir.length} staff from pasted JSON`);
-        pasteJson.value = '';
-      } catch (err) {
-        showMessage(errorMessage, 'Invalid JSON pasted');
-      }
-    });
-
-    fetchRemote.addEventListener('click', async () => {
-      const url = fetchUrl.value.trim();
-      if (!url) {
-        showMessage(warningMessage, 'Enter a URL first');
-        return;
-      }
-      try {
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('Fetch failed: ' + res.status);
-        const contentType = res.headers.get('content-type') || '';
-        const text = await res.text();
-        let dir = [];
-        if (contentType.includes('application/json') || url.endsWith('.json')) {
-          try {
-            const parsed = JSON.parse(text);
-            if (!Array.isArray(parsed)) { showMessage(errorMessage, 'Remote JSON must be an array'); return; }
-            dir = normalizeDirectory(parsed);
-          } catch (err) {
-            showMessage(errorMessage, 'Invalid JSON at that URL');
-            return;
-          }
-        } else {
-          // try CSV parse
-          dir = parseCSV(text);
-        }
-        if (dir.length === 0) {
-          showMessage(warningMessage, 'No valid staff entries found at URL');
-          return;
-        }
-        setStoredDirectory(dir);
-        showMessage(saveMessage, `Loaded ${dir.length} staff from remote`);
-        fetchUrl.value = '';
-      } catch (err) {
-        console.error(err);
-        showMessage(errorMessage, 'Failed to fetch remote file. Ensure CORS is enabled on the server and the URL is correct.');
-      }
-    });
-
-    exportJson.addEventListener('click', () => {
-      const dir = getStoredDirectory();
-      const data = JSON.stringify(dir, null, 2);
-      const blob = new Blob([data], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'employeeDirectory.json';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    });
-
-    printDirectoryBtn.addEventListener('click', () => {
-      const dir = getStoredDirectory();
-      let html = `<html><head><title>Staff Directory</title><style>
-        body{font-family:Arial,Helvetica,sans-serif;color:#111}
-        table{width:100%;border-collapse:collapse}
-        th,td{border:1px solid #ddd;padding:8px;text-align:left}
-        th{background:#f4f4f4}
-      </style></head><body><h2>Staff Directory</h2><table><thead><tr><th>Name</th><th>ID</th><th>Shift</th></tr></thead><tbody>`;
-      dir.forEach(d => {
-        html += `<tr><td>${escapeHtml(d.name)}</td><td>${escapeHtml(d.id)}</td><td>${escapeHtml(d.shiftCode)}</td></tr>`;
-      });
-      html += `</tbody></table></body></html>`;
-      openPrintWindow(html);
-    });
-
-    printRecordsBtn.addEventListener('click', () => {
-      const records = getStoredRecords();
-      let html = `<html><head><title>Attendance Records</title><style>
-        body{font-family:Arial,Helvetica,sans-serif;color:#111}
-        table{width:100%;border-collapse:collapse}
-        th,td{border:1px solid #ddd;padding:8px;text-align:left}
-        th{background:#f4f4f4}
-      </style></head><body><h2>Attendance Records</h2><table><thead><tr><th>Date</th><th>Name</th><th>In Time</th><th>Out Time</th><th>Shift</th><th>Notes</th></tr></thead><tbody>`;
-      records.forEach(r => {
-        html += `<tr><td>${escapeHtml(r.date||'')}</td><td>${escapeHtml(r.name||'')}</td><td>${escapeHtml(r.inTime||'')}</td><td>${escapeHtml(r.outTime||'')}</td><td>${escapeHtml(r.shiftCode||'')}</td><td>${escapeHtml(r.notes||'')}</td></tr>`;
-      });
-      html += `</tbody></table></body></html>`;
-      openPrintWindow(html);
-    });
-
-    clearDirectoryBtn.addEventListener('click', () => {
-      if (!confirm('Clear the current employee directory? This cannot be undone.')) return;
-      localStorage.removeItem('employeeDirectory');
-      populateEmployees();
-      showMessage(saveMessage, 'Directory cleared. Default directory will be used on next load.');
-    });
-
-    function openPrintWindow(contentHTML) {
-      const w = window.open('', '_blank', 'noopener');
-      w.document.write(contentHTML);
-      w.document.close();
-      w.focus();
-      // Give the new window a moment to render then print
-      setTimeout(() => {
-        w.print();
-      }, 300);
-    }
-
-    function escapeHtml(s) {
-      return (s || '').toString().replace(/[&<>"'\/]/g, function (c) {
-        return {
-          '&': '&amp;',
-          '<': '&lt;',
-          '>': '&gt;',
-          '"': '&quot;',
-          "'": '&#39;',
-          '/': '&#x2F;'
-        }[c];
-      });
-    }
-
-    /* End of admin helpers */
   </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>June 2026 Maintenance Shift Schedule</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: Inter, Arial, sans-serif;
+      background: #eef2ff;
+      color: #111827;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+    }
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(2rem, 2.5vw, 2.4rem);
+      line-height: 1.05;
+    }
+    .hero p {
+      margin: 8px 0 0;
+      color: #475569;
+      max-width: 720px;
+      font-size: 0.96rem;
+      line-height: 1.7;
+    }
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .nav-links a {
+      padding: 10px 14px;
+      border-radius: 999px;
+      text-decoration: none;
+      background: #4338ca;
+      color: #ffffff;
+      font-size: 0.9rem;
+      transition: background 0.2s ease;
+    }
+    .nav-links a:hover {
+      background: #312e81;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 18px 55px rgba(15, 23, 42, 0.09);
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .card h2 {
+      margin-top: 0;
+      color: #111827;
+      font-size: 1.24rem;
+    }
+    .table-wrapper {
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1100px;
+    }
+    th,
+    td {
+      border: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: center;
+      white-space: nowrap;
+      font-size: 0.86rem;
+    }
+    th {
+      background: #1f2937;
+      color: #f8fafc;
+      font-weight: 700;
+    }
+    td {
+      background: #ffffff;
+      color: #111827;
+    }
+    .row-label {
+      background: #111827;
+      color: #ffffff;
+      text-align: left;
+      font-weight: 700;
+    }
+    .secondary-label {
+      background: #334155;
+      color: #f8fafc;
+      text-align: left;
+      font-weight: 500;
+    }
+    .note {
+      margin-top: 20px;
+      color: #334155;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+    .note strong {
+      color: #0f172a;
+    }
+    .small {
+      font-size: 0.84rem;
+      color: #64748b;
+    }
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #475569;
+      font-size: 0.92rem;
+    }
+    input,
+    select,
+    button,
+    textarea {
+      width: 100%;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 0.95rem;
+      color: #0f172a;
+      background: #f8fafc;
+    }
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+    button {
+      cursor: pointer;
+      background: #4338ca;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      transition: transform 0.15s ease, background 0.15s ease;
+    }
+    button:hover {
+      background: #312e81;
+      transform: translateY(-1px);
+    }
+    .summary-table {
+      margin-top: 16px;
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .summary-table th,
+    .summary-table td {
+      border-color: #e2e8f0;
+      padding: 10px;
+      font-size: 0.92rem;
+    }
+    .summary-table th {
+      background: #4338ca;
+    }
+    .admin-box {
+      border: 1px solid #c7d2fe;
+      background: #eef2ff;
+      border-radius: 16px;
+      padding: 18px;
+    }
+    .success {
+      border-left: 4px solid #22c55e;
+      background: #ecfdf5;
+      color: #164e63;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      border-radius: 14px;
+    }
+    .warning {
+      border-left: 4px solid #f59e0b;
+      background: #fffbeb;
+      color: #92400e;
+      padding: 14px 16px;
+      margin-bottom: 18px;
+      border-radius: 14px;
+    }
+    .footer {
+      margin-top: 24px;
+      font-size: 0.87rem;
+      color: #475569;
+      text-align: center;
+    }
+    @media (max-width: 760px) {
+      th,
+      td {
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="hero">
+      <div>
+       <h1>July 2026 Maintenance Shift Schedule</h1>
+      <h2>Team assignments and daily shift codes</h2>
+      <table>
+        <thead>
+          <tr>
+            <th rowspan="2">Role</th>
+            <th rowspan="2">Name</th>
+            <th rowspan="2">W/OF</th>
+            <th colspan="31">July 2026</th>
+          </tr>
+          <tr>
+                                    <th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th>
+            <th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th>
+            <th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th>
+            <th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th><th>Sat</th><th>Sun</th>
+            <th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th>
+          </tr>
+          <tr>
+            <th colspan="3"></th>
+            <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th>
+            <th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th>
+            <th>15</th><th>16</th><th>17</th><th>18</th><th>19</th><th>20</th><th>21</th>
+            <th>22</th><th>23</th><th>24</th><th>25</th><th>26</th><th>27</th><th>28</th>
+            <th>29</th><th>30</th><th>31</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-label" colspan="3">Fire Officer</td>
+            <td colspan="31" class="secondary-label">Mr. Chandrapal</td>
+          </tr>
+          <tr>
+            <td>Fire Officer</td>
+            <td class="name">Mr. Chandrapal</td>
+            <td>THU</td>
+            <td>B</td><td>B</td><td>B</td><td>B</td><td>B</td><td>B</td><td>B</td>
+            <td>B</td><th>W</th><td>G</td><td>G</td><td>G</td><td>G</td><td>G</td>
+            <th>C/OFF</th><th>W</th><td>G</td><td>G</td><td>G</td><td>G</td><td>G</td>
+            <td>G</td><th>W</th><td>G</td><td>G</td><td>G</td><td>G</td><td>G</td>
+            <td>G</td><th>W</th><td>G</td>
+          </tr>
+          <tr>
+            <td class="row-label" colspan="3">Sr. Supervisor</td>
+            <td colspan="31" class="secondary-label">Mr. Shrichand</td>
+          </tr>
+          <tr>
+            <td>Sr. Supervisor</td>
+            <td class="name">Mr. Shrichand</td>
+            <td>MON</td>
+            <td>A</td><td>G</td><td>G</td><td>G</td><td>G</td><th>W</th><td>B</td>
+            <td>B</td><td>G</td><td>G</td><td>G</td><td>G</td><th>W</th><td>A</td>
+            <td>A</td><td>G</td><td>G</td><td>G</td><td>G</td><th>W</th><td>B</td>
+            <td>B</td><td>G</td><td>G</td><td>G</td><td>G</td><th>W</th><td>A</td>
+            <td>A</td><td>G</td><td>G</td>
+          </tr>
+          <tr>
+            <td class="row-label" colspan="3">Shift Supervisor</td>
+            <td colspan="31" class="secondary-label">Mr. DINESH, MR. DEVARAO</td>
+          </tr>
+          <tr>
+            <td>Shift Supervisor</td>
+            <td class="name">MR. DINESH</td>
+            <td>TUE</td>
+            <td>B</td><td>B</td><td>B</td><td>B</td><td>B</td><td>B</td><th>W</th>
+            <td>A</td><td>A</td><td>B</td><td>A</td><td>A</td><td>A</td><th>W</th>
+            <td>B</td><td>B</td><td>B</td><td>B</td><td>B</td><td>B</td><th>W</th>
+            <td>A</td><td>A</td><td>A</td><td>A</td><td>A</td><td>A</td><th>W</th>
+            <td>B</td><td>B</td><td>B</td>
+          </tr>
+          <tr>
+            <td>Shift Supervisor</td>
+            <td class="name">Mr. DEVARAO</td>
+            <td>WED</td>
+            <th>W</th><td>A</td><td>A</td><td>A</td><td>A</td><td>A</td><td>A</td>
+            <th>W</th><td>B</td><td>A</td><td>B</td><td>B</td><td>B</td><td>B</td>
+            <th>W</th><td>A</td><td>A</td><td>A</td><td>A</td><td>A</td><td>A</td>
+            <th>W</th><td>B</td><td>B</td><td>B</td><td>B</td><td>B</td><td>B</td>
+            <th>W</th><td>A</td><td>A</td>
+          </tr>
+          <tr>
+            <td class="row-label" colspan="3">Electrician</td>
+            <td colspan="31" class="secondary-label">Mr. Arun Jat, Mr. Sunny, Mr. Rahul, Mr. Rajkumar, Mr. Ajeet</td>
+          </tr>
+          <tr>
+            <td>Electrician</td>
+            <td class="name">Mr. Arun Jat</td>
+            <td>THU</td>
+            <td>B</td><th>W</th><td>C</td><td>C</td><td>C</td><td>C</td><td>C</td>
+            <td>C</td><th>W</th><td>A</td><td>A</td><td>A</td><td>A</td><td>A</td>
+            <td>A</td><th>W</th><td>G</td><td>G</td><td>G</td><td>G</td><td>G</td>
+            <td>G</td><th>W</th><td>B</td><td>B</td><td>B</td><td>B</td><td>B</td>
+            <td>B</td><th>W</th><td>C</td>
+          </tr>
+          <tr>
+            <td>Electrician</td>
+            <td class="name">Mr. Sunny</td>
+            <td>FRI</td>
+            <td>C</td><td>C</td><th>W</th><td>A</td><td>A</td><td>A</td><td>A</td>
+            <td>A</td><td>A</td><th>W</th><td>B</td><td>B</td><td>B</td><td>G</td>
+            <td>G</td><td>G</td><th>W</th><td>B</td><td>B</td><td>B</td><td>B</td>
+            <td>B</td><td>B</td><th>W</th><td>C</td><td>C</td><td>C</td><td>C</td>
+            <td>C</td><td>C</td><th>W</th>
+          </tr>
+          <tr>
+            <td>Electrician</td>
+            <td class="name">Mr. Rahul</td>
+            <td>SAT</td>
+            <td>A</td><td>A</td><td>A</td><th>W</th><td>B</td><td>B</td><td>B</td>
+            <td>B</td><td>B</td><td>B</td><th>W</th><td>B</td><td>B</td><td>B</td>
+            <td>B</td><td>B</td><td>B</td><th>W</th><td>C</td><td>C</td><td>C</td>
+            <td>C</td><td>C</td><td>C</td><th>W</th><td>A</td><td>A</td><td>A</td>
+            <td>A</td><td>A</td><td>A</td>
+          </tr>
+          <tr>
+            <td>Electrician</td>
+            <td class="name">Mr. Rajkumar</td>
+            <td>SUN</td>
+            <td>G</td><td>B</td><td>B</td><td>B</td><th>W</th><td>B</td><td>B</td>
+            <td>B</td><td>B</td><td>B</td><td>B</td><th>W</th><td>C</td><td>C</td>
+            <td>C</td><td>C</td><td>C</td><td>C</td><th>W</th><td>A</td><td>A</td>
+            <td>A</td><td>A</td><td>A</td><td>A</td><th>W</th><td>G</td><td>G</td>
+            <td>G</td><td>G</td><td>G</td>
+          </tr>
+          <tr>
+            <td>Electrician</td>
+            <td class="name">Mr. Ajeet</td>
+            <td>MON</td>
+            <td>B</td><td>B</td><td>B</td><td>B</td><td>B</td><th>W</th><td>G</td>
+            <td>G</td><td>C</td><td>C</td><td>C</td><td>C</td><th>W</th><td>G</td>
+            <td>G</td><td>A</td><td>A</td><td>A</td><td>A</td><th>W</th><td>G</td>
+            <td>G</td><td>G</td><td>G</td><td>G</td><td>G</td><th>W</th><td>G</td>
+            <td>G</td><td>B</td><td>B</td>
+          </tr>
+          <tr>
+            <td class="row-label" colspan="3">HVAC Tech</td>
+            <td colspan="31" class="secondary-label">Mr. Mohan</td>
+          </tr>
+          <tr>
+            <td>HVAC Tech</td>
+            <td class="name">Mr. Mohan</td>
+            <td>TUE</td>
+            <td>G</td><td>G</td><td>G</td><td>G</td><td>G</td><td>G</td><th>W</th>
+            <td>G</td><td>G</td><td>G</td><td>G</td><td>G</td><td>G</td><th>W</th>
+            <td>G</td><td>G</td><td>G</td><td>G</td><td>G</td><td>G</td><th>W</th>
+            <td>G</td><td>G</td><td>G</td><td>G</td><td>G</td><td>G</td><th>W</th>
+            <td>G</td><td>G</td><td>G</td>
+
+          </tr>
+          <tr>
+            <td class="row-label" colspan="3">Plumber</td>
+            <td colspan="31" class="secondary-label">Mr. Vikram, Mr. Bigyan, Mr. Indrapal, Mr. Umesh</td>
+          </tr>
+          <tr>
+            <td>Plumber</td>
+            <td class="name">Mr. Vikram</td>
+            <td>WED</td>
+            <td>A</td><td>A</td><td>A</td><td>A</td><td>G</td><td>G</td><th>C/OFF</th>
+            <th>W</th><td>B</td><td>B</td><td>B</td><td>B</td><td>B</td><td>B</td>
+            <th>W</th><td>C</td><td>C</td><td>C</td><td>C</td><td>C</td><td>C</td>
+            <th>W</th><td>A</td><td>A</td><td>A</td><td>A</td><td>A</td><td>A</td>
+            <th>W</th><td>A</td><td>A</td>
+          </tr>
+          <tr>
+            <td>Plumber</td>
+            <td class="name">Mr. Bigyan</td>
+            <td>THU</td>
+            <th>LWP</th><th>LWP</th><td>B</td><td>B</td><td>B</td><td>B</td><td>B</td>
+            <td>B</td><th>W</th><td>C</td><td>C</td><td>C</td><td>C</td><td>C</td>
+            <td>C</td><th>W</th><td>A</td><td>A</td><td>A</td><td>A</td><td>A</td>
+            <td>A</td><th>W</th><td>G</td><td>B</td><td>B</td><td>G</td><td>G</td>
+            <td>A</td><th>W</th><td>B</td>
+          </tr>
+          <tr>
+            <td>Plumber</td>
+            <td class="name">Mr. Indrapal</td>
+            <td>FRI</td>
+            <td>B</td><td>B</td><th>W</th><td>C</td><td>C</td><td>C</td><td>C</td>
+            <td>C</td><td>C</td><th>W</th><td>A</td><td>A</td><td>A</td><td>A</td>
+            <td>A</td><td>A</td><th>W</th><td>B</td><td>G</td><td>G</td><td>G</td>
+            <td>C</td><td>C</td><td>C</td><td>C</td><th>C/OFF</th><td>B</td><td>B</td>
+            <td>B</td><td>B</td><th>W</th>
+          </tr>
+          <tr>
+            <td>Plumber</td>
+            <td class="name">Mr. Umesh</td>
+            <td>SAT</td>
+            <td>C</td><td>C</td><td>C</td><th>W</th><td>A</td><td>A</td><td>A</td>
+            <td>A</td><td>A</td><td>A</td><th>W</th><td>G</td><td>G</td><td>G</td>
+            <td>B</td><td>B</td><td>B</td><th>W</th><td>B</td><td>B</td><td>B</td>
+            <td>B</td><td>B</td><td>B</td><th>W</th><td>C</td><td>C</td><td>C</td>
+            <td>C</td><td>C</td><td>C</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="note">
+        <p><strong>Notes:</strong> During an event or emergency, weekly off can be carried forward if required. Schedule may change during events.</p>
+        <p class="small">Created from the July 2026 maintenance schedule. Review assigned codes before final distribution.</p>
+      </div>
+    </div>
+
+    <div class="card" id="attendance">
+      <h2>Attendance capture</h2>
+      <div class="success" id="saveMessage" style="display:none;"></div>
+      <div class="warning" id="errorMessage" style="display:none;"></div>
+      <div class="form-grid">
+        <div>
+          <label for="employeeName">Employee Name</label>
+          <select id="employeeName"></select>
+        </div>
+        <div>
+          <label for="userId">User ID</label>
+          <input id="userId" type="text" placeholder="Enter employee ID" />
+        </div>
+        <div>
+          <label for="password">Password</label>
+          <input id="password" type="password" placeholder="Enter password" />
+        </div>
+        <div>
+          <label for="attendanceDate">Date</label>
+          <input id="attendanceDate" type="date" />
+        </div>
+        <div>
+          <label for="shiftCode">Shift Code</label>
+          <select id="shiftCode">
+            <option value="A">A — 08:00 to 17:00</option>
+            <option value="B">B — 13:00 to 22:00</option>
+            <option value="C">C — 22:00 to 08:00</option>
+            <option value="G">G — 10:00 to 19:00</option>
+          </select>
+        </div>
+        <div>
+          <label for="inTime">In Time</label>
+          <input id="inTime" type="time" />
+        </div>
+        <div>
+          <label for="outTime">Out Time</label>
+          <input id="outTime" type="time" />
+        </div>
+        <div>
+          <label for="photoUpload">Photo / camera capture</label>
+          <input id="photoUpload" type="file" accept="image/*" capture="environment" />
+        </div>
+        <div>
+          <label for="notes">Notes</label>
+          <textarea id="notes" placeholder="Optional notes or event details"></textarea>
+        </div>
+      </div>
+      <div style="margin-top:18px; display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+        <button id="saveAttendance">Save attendance</button>
+        <span class="small">Use mobile camera capture on supported devices to attach photo evidence.</span>
+      </div>
+    </div>
+
+    <div class="card" id="summary">
+      <h2>Attendance summary</h2>
+      <div class="form-grid" style="margin-bottom: 18px;">
+        <div>
+          <label for="filterMode">Filter by</label>
+          <select id="filterMode">
+            <option value="all">All months</option>
+            <option value="date">Specific date</option>
+            <option value="month">Month</option>
+          </select>
+        </div>
+        <div id="dateFilter" style="display:none;">
+          <label for="filterDate">Date</label>
+          <input id="filterDate" type="date" />
+        </div>
+        <div id="monthFilter" style="display:none;">
+          <label for="filterMonth">Month</label>
+          <input id="filterMonth" type="month" />
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button id="refreshSummary">Refresh summary</button>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="summary-table" id="summaryTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Employee</th>
+              <th>User ID</th>
+              <th>Shift</th>
+              <th>In</th>
+              <th>Out</th>
+              <th>Photo</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="note">
+        <p class="small">Attendance entries are stored locally in the browser for demonstration. For production, connect this portal to a secure server and database.</p>
+      </div>
+    </div>
+
+    <div class="card" id="admin">
+      <h2>Admin permissions</h2>
+      <div class="admin-box">
+        <div class="form-grid">
+          <div>
+            <label for="adminPassword">Admin password</label>
+            <input id="adminPassword" type="password" placeholder="Enter admin password" />
+          </div>
+          <div style="align-self:end;">
+            <button id="adminLogin">Unlock admin controls</button>
+          </div>
+        </div>
+        <div id="adminControls" style="display:none; margin-top:18px;">
+          <p class="small">Admin mode allows schedule edits, attendance deletion, and permission management. Use only with proper authorization.</p>
+          <button id="clearEntries" style="background:#dc2626;">Clear all attendance records</button>
+          <p class="note">Admin password for demo: <strong>admin123</strong></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Employee portal: <a href="#attendance">Attendance Entry</a> · Admin portal: <a href="#admin">Admin Tools</a></p>
+    </div>
+  </div>
+
+  <script>
+    const employees = [
+      'Mr. Chandrapal',
+      'Mr. Shrichand',
+      'MR. DINESH',
+      'Mr. DEVARAO',
+      'Mr. Arun Jat',
+      'Mr. Sunny',
+      'Mr. Rahul',
+      'Mr. Rajkumar',
+      'Mr. Ajeet',
+      'Mr. Mohan',
+      'Mr. Vikram',
+      'Mr. Bigyan',
+      'Mr. Indrapal',
+      'Mr. Umesh'
+    ];
+
+    const employeeName = document.getElementById('employeeName');
+    const userId = document.getElementById('userId');
+    const password = document.getElementById('password');
+    const attendanceDate = document.getElementById('attendanceDate');
+    const shiftCode = document.getElementById('shiftCode');
+    const inTime = document.getElementById('inTime');
+    const outTime = document.getElementById('outTime');
+    const photoUpload = document.getElementById('photoUpload');
+    const notes = document.getElementById('notes');
+    const saveAttendance = document.getElementById('saveAttendance');
+    const saveMessage = document.getElementById('saveMessage');
+    const errorMessage = document.getElementById('errorMessage');
+    const summaryTable = document.getElementById('summaryTable').querySelector('tbody');
+    const filterMode = document.getElementById('filterMode');
+    const dateFilter = document.getElementById('dateFilter');
+    const monthFilter = document.getElementById('monthFilter');
+    const filterDate = document.getElementById('filterDate');
+    const filterMonth = document.getElementById('filterMonth');
+    const refreshSummary = document.getElementById('refreshSummary');
+    const adminPassword = document.getElementById('adminPassword');
+    const adminLogin = document.getElementById('adminLogin');
+    const adminControls = document.getElementById('adminControls');
+    const clearEntries = document.getElementById('clearEntries');
+
+    function populateEmployeeOptions() {
+      employees.forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = name;
+        employeeName.appendChild(option);
+      });
+    }
+
+    function showMessage(element, text) {
+      element.textContent = text;
+      element.style.display = 'block';
+      setTimeout(() => {
+        element.style.display = 'none';
+      }, 4200);
+    }
+
+    function getStoredRecords() {
+      const saved = localStorage.getItem('attendanceRecords');
+      return saved ? JSON.parse(saved) : [];
+    }
+
+    function saveRecords(records) {
+      localStorage.setItem('attendanceRecords', JSON.stringify(records));
+    }
+
+    function buildSummary() {
+      const records = getStoredRecords();
+      const mode = filterMode.value;
+      const dateValue = filterDate.value;
+      const monthValue = filterMonth.value;
+      summaryTable.innerHTML = '';
+
+      const filtered = records.filter(record => {
+        if (mode === 'date' && dateValue) {
+          return record.date === dateValue;
+        }
+        if (mode === 'month' && monthValue) {
+          return record.date.startsWith(monthValue);
+        }
+        return true;
+      });
+
+      if (!filtered.length) {
+        const row = document.createElement('tr');
+        row.innerHTML = '<td colspan="8" style="text-align:center; color:#475569;">No attendance records found for the selected filter.</td>';
+        summaryTable.appendChild(row);
+        return;
+      }
+
+      filtered.forEach(record => {
+        const row = document.createElement('tr');
+        const photoCell = record.photo ? `<a href="${record.photo}" target="_blank">View</a>` : '—';
+        row.innerHTML = `
+          <td>${record.date}</td>
+          <td>${record.name}</td>
+          <td>${record.userId}</td>
+          <td>${record.shiftCode}</td>
+          <td>${record.inTime}</td>
+          <td>${record.outTime}</td>
+          <td>${photoCell}</td>
+          <td>${record.notes || '—'}</td>
+        `;
+        summaryTable.appendChild(row);
+      });
+    }
+
+    function resetForm() {
+      userId.value = '';
+      password.value = '';
+      attendanceDate.value = '';
+      inTime.value = '';
+      outTime.value = '';
+      photoUpload.value = '';
+      notes.value = '';
+      shiftCode.value = 'A';
+    }
+
+    saveAttendance.addEventListener('click', () => {
+      const name = employeeName.value;
+      const id = userId.value.trim();
+      const pass = password.value.trim();
+      const date = attendanceDate.value;
+      const shift = shiftCode.value;
+      const inVal = inTime.value;
+      const outVal = outTime.value;
+      const noteValue = notes.value.trim();
+
+      if (!name || !id || !pass || !date || !inVal || !outVal) {
+        showMessage(errorMessage, 'Please complete all required fields before saving attendance.');
+        return;
+      }
+
+      const record = {
+        name,
+        userId: id,
+        password: pass,
+        date,
+        shiftCode: shift,
+        inTime: inVal,
+        outTime: outVal,
+        notes: noteValue,
+        photo: ''
+      };
+
+      const file = photoUpload.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          record.photo = reader.result;
+          const existing = getStoredRecords();
+          existing.push(record);
+          saveRecords(existing);
+          showMessage(saveMessage, 'Attendance record saved successfully.');
+          resetForm();
+          buildSummary();
+        };
+        reader.readAsDataURL(file);
+      } else {
+        const existing = getStoredRecords();
+        existing.push(record);
+        saveRecords(existing);
+        showMessage(saveMessage, 'Attendance record saved successfully.');
+        resetForm();
+        buildSummary();
+      }
+    });
+
+    filterMode.addEventListener('change', () => {
+      dateFilter.style.display = 'none';
+      monthFilter.style.display = 'none';
+      if (filterMode.value === 'date') {
+        dateFilter.style.display = 'block';
+      } else if (filterMode.value === 'month') {
+        monthFilter.style.display = 'block';
+      }
+    });
+
+    refreshSummary.addEventListener('click', buildSummary);
+    adminLogin.addEventListener('click', () => {
+      if (adminPassword.value === 'admin123') {
+        adminControls.style.display = 'block';
+        showMessage(saveMessage, 'Admin controls enabled.');
+      } else {
+        showMessage(errorMessage, 'Incorrect admin password.');
+      }
+      adminPassword.value = '';
+    });
+    clearEntries.addEventListener('click', () => {
+      if (!confirm('Clear all stored attendance records?')) return;
+      localStorage.removeItem('attendanceRecords');
+      buildSummary();
+      showMessage(saveMessage, 'All attendance records cleared.');
+    });
+
+    populateEmployeeOptions();
+    buildSummary();
+  </script>
+</body>
+</html>
+
+
