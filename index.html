@@ -18,7 +18,7 @@
       background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
     }
     .container {
-      max-width: 600px;
+      max-width: 800px;
       margin: 0 auto;
       padding: 20px;
       min-height: 100vh;
@@ -28,7 +28,7 @@
     }
     .header {
       text-align: center;
-      margin-bottom: 32px;
+      margin-bottom: 20px;
     }
     .header h1 {
       margin: 0 0 8px;
@@ -56,7 +56,8 @@
     }
     input,
     select,
-    button {
+    button,
+    textarea {
       width: 100%;
       border: 1px solid #475569;
       border-radius: 12px;
@@ -67,8 +68,10 @@
       font-family: inherit;
       margin-bottom: 14px;
     }
+    textarea { min-height: 120px; resize: vertical; }
     input:focus,
-    select:focus {
+    select:focus,
+    textarea:focus {
       outline: none;
       border-color: #4338ca;
       box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
@@ -89,27 +92,15 @@
       transform: translateY(-2px);
       box-shadow: 0 10px 25px rgba(67, 56, 202, 0.2);
     }
-    button:active {
-      transform: translateY(0);
-    }
-    button.secondary {
-      background: #475569;
-    }
-    button.secondary:hover {
-      background: #64748b;
-    }
-    button.success {
-      background: #22c55e;
-    }
-    button.success:hover {
-      background: #16a34a;
-    }
-    button.danger {
-      background: #dc2626;
-    }
-    button.danger:hover {
-      background: #b91c1c;
-    }
+    button:active { transform: translateY(0); }
+    .btn-row { display:flex; gap:12px; flex-wrap:wrap; }
+    .btn-row button { flex:1 1 auto; min-width:120px; }
+    button.secondary { background: #475569; }
+    button.secondary:hover { background: #64748b; }
+    button.success { background: #22c55e; }
+    button.success:hover { background: #16a34a; }
+    button.danger { background: #dc2626; }
+    button.danger:hover { background: #b91c1c; }
     .success {
       border-left: 4px solid #22c55e;
       background: rgba(34, 197, 94, 0.1);
@@ -146,18 +137,14 @@
       object-fit: cover;
       display: none;
     }
-    #videoPreview {
-      aspect-ratio: 1;
-    }
+    #videoPreview { aspect-ratio: 1; }
     #selfiePreview {
       aspect-ratio: 1;
       cursor: pointer;
       border: 2px solid #475569;
       transition: border-color 0.2s;
     }
-    #selfiePreview:hover {
-      border-color: #4338ca;
-    }
+    #selfiePreview:hover { border-color: #4338ca; }
     .info-box {
       background: rgba(67, 56, 202, 0.1);
       border: 1px solid #4338ca;
@@ -195,29 +182,16 @@
       padding: 8px 0;
       border-bottom: 1px solid rgba(67, 56, 202, 0.3);
     }
-    .employee-detail-row:last-child {
-      border-bottom: none;
-    }
-    .detail-label {
-      color: #94a3b8;
-      font-weight: 500;
-    }
-    .detail-value {
-      color: #f1f5f9;
-      font-weight: 600;
-    }
-    .footer {
-      text-align: center;
-      color: #64748b;
-      font-size: 0.85rem;
-      margin-top: 20px;
-    }
-    a {
-      color: #4338ca;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
+    .employee-detail-row:last-child { border-bottom: none; }
+    .detail-label { color: #94a3b8; font-weight: 500; }
+    .detail-value { color: #f1f5f9; font-weight: 600; }
+    .footer { text-align: center; color: #64748b; font-size: 0.85rem; margin-top: 20px; }
+    a { color: #4338ca; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .admin-section { margin-top: 16px; background: rgba(71,85,105,0.06); padding:12px; border-radius:12px; }
+    .muted { color:#94a3b8; font-size:0.9rem; margin-bottom:8px; }
+    @media (min-width:900px) {
+      .btn-row button { max-width:180px; }
     }
   </style>
 </head>
@@ -254,8 +228,39 @@
         <div class="step-indicator active">✓ Selfie Captured</div>
         <img id="selfiePreview" alt="Selfie preview" title="Click to view employee details" />
         <div id="employeeDetail"></div>
-        <button type="button" id="confirmAttendance" class="success">✓ Confirm Attendance</button>
-        <button type="button" id="retakePhoto" class="secondary">↻ Retake Photo</button>
+        <div class="btn-row">
+          <button type="button" id="confirmAttendance" class="success">✓ Confirm Attendance</button>
+          <button type="button" id="retakePhoto" class="secondary">↻ Retake Photo</button>
+        </div>
+      </div>
+
+      <!-- Admin / Import area: allows uploading/pasting/fetching staff data -->
+      <div class="admin-section" id="adminSection">
+        <div class="muted">Admin: Import staff directory (CSV or JSON), fetch from URL, export or print directory/records.</div>
+
+        <label for="fileInput">Upload file (CSV or JSON)</label>
+        <input type="file" id="fileInput" accept=".csv,application/json,text/csv" />
+
+        <label for="pasteJson">Paste JSON array of staff (example: [{"name":"X","id":"ID","password":"PW","shiftCode":"A"}])</label>
+        <textarea id="pasteJson" placeholder='Paste JSON here and click "Load Pasted JSON"'></textarea>
+        <div class="btn-row">
+          <button type="button" id="loadPastedJson">Load Pasted JSON</button>
+          <button type="button" id="clearDirectory" class="danger">Clear Directory</button>
+        </div>
+
+        <label for="fetchUrl">Fetch remote JSON/CSV (CORS required)</label>
+        <input type="url" id="fetchUrl" placeholder="https://example.com/staff.json or staff.csv" />
+        <div class="btn-row">
+          <button type="button" id="fetchRemote">Fetch & Load</button>
+          <button type="button" id="exportJson">Export Directory (JSON)</button>
+        </div>
+
+        <div style="margin-top:8px;" class="btn-row">
+          <button type="button" id="printDirectory" class="secondary">Print Directory</button>
+          <button type="button" id="printRecords" class="secondary">Print Attendance Records</button>
+        </div>
+
+        <div class="muted" style="margin-top:8px;">Notes: CSV should have headers: name,id,password,shiftCode (order not strict). Remote fetch requires the remote server to allow CORS.</div>
       </div>
     </div>
 
@@ -266,6 +271,7 @@
   </div>
 
   <script>
+    /* ===== data and DOM references ===== */
     const defaultDirectory = [
       { name: 'Mr. Chandrapal', id: 'CH001', password: 'CH001', shiftCode: 'A' },
       { name: 'Mr. Shrichand', id: 'SH002', password: 'SH002', shiftCode: 'A' },
@@ -299,12 +305,32 @@
     const warningMessage = document.getElementById('warningMessage');
     const errorMessage = document.getElementById('errorMessage');
 
+    const fileInput = document.getElementById('fileInput');
+    const pasteJson = document.getElementById('pasteJson');
+    const loadPastedJson = document.getElementById('loadPastedJson');
+    const fetchUrl = document.getElementById('fetchUrl');
+    const fetchRemote = document.getElementById('fetchRemote');
+    const exportJson = document.getElementById('exportJson');
+    const printDirectoryBtn = document.getElementById('printDirectory');
+    const printRecordsBtn = document.getElementById('printRecords');
+    const clearDirectoryBtn = document.getElementById('clearDirectory');
+
     let selfieDataURL = '';
     let activeStream = null;
 
+    /* ===== localStorage helpers ===== */
     function getStoredDirectory() {
       const saved = localStorage.getItem('employeeDirectory');
-      return saved ? JSON.parse(saved) : defaultDirectory;
+      try {
+        return saved ? JSON.parse(saved) : defaultDirectory;
+      } catch (e) {
+        return defaultDirectory;
+      }
+    }
+
+    function setStoredDirectory(dir) {
+      localStorage.setItem('employeeDirectory', JSON.stringify(dir));
+      populateEmployees();
     }
 
     function getDirectoryEntry(name) {
@@ -326,6 +352,7 @@
       localStorage.setItem('attendanceRecords', JSON.stringify(records));
     }
 
+    /* ===== UI helpers ===== */
     function populateEmployees() {
       const directory = getStoredDirectory();
       employeeName.innerHTML = '<option value="">-- Select your name --</option>';
@@ -345,6 +372,7 @@
       }, 4500);
     }
 
+    /* ===== shift logic ===== */
     function getShiftWindow(code) {
       const map = {
         A: { start: '08:00', end: '17:00' },
@@ -353,55 +381,6 @@
         G: { start: '10:00', end: '19:00' }
       };
       return map[code] || { start: '00:00', end: '23:59' };
-    }
-
-    function getShiftCodeByTime() {
-      const now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
-      const timeInMinutes = hours * 60 + minutes;
-
-      const shifts = [
-        { code: 'A', start: 480, end: 1020 },    // 08:00-17:00
-        { code: 'B', start: 780, end: 1320 },    // 13:00-22:00
-        { code: 'C', start: 1320, end: 480 },    // 22:00-08:00 (wraps midnight)
-        { code: 'G', start: 600, end: 1140 }     // 10:00-19:00
-      ];
-
-      let activeShifts = [];
-
-      for (let shift of shifts) {
-        let isActive = false;
-        if (shift.code === 'C') {
-          isActive = timeInMinutes >= shift.start || timeInMinutes < shift.end;
-        } else {
-          isActive = timeInMinutes >= shift.start && timeInMinutes < shift.end;
-        }
-        if (isActive) {
-          activeShifts.push(shift);
-        }
-      }
-
-      if (activeShifts.length === 0) return 'A';
-      if (activeShifts.length === 1) return activeShifts[0].code;
-
-      // Multiple active shifts - pick most recently started
-      let mostRecentShift = activeShifts[0];
-      let mostRecentStart = mostRecentShift.code === 'C' && timeInMinutes < 480 
-        ? 1320 + 1440
-        : mostRecentShift.start;
-
-      for (let shift of activeShifts) {
-        let startTime = shift.code === 'C' && timeInMinutes < 480
-          ? shift.start + 1440
-          : shift.start;
-        if (startTime > mostRecentStart) {
-          mostRecentStart = startTime;
-          mostRecentShift = shift;
-        }
-      }
-
-      return mostRecentShift.code;
     }
 
     function getShiftCodeByTime() {
@@ -488,6 +467,7 @@
       `;
     }
 
+    /* ===== camera / selfie ===== */
     function stopCamera() {
       if (activeStream) {
         activeStream.getTracks().forEach(track => track.stop());
@@ -517,7 +497,7 @@
         image.onload = () => {
           const canvas = document.createElement('canvas');
           const width = 160;
-          const height = Math.round((image.height / image.width) * 160);
+          const height = Math.round((image.height / image.width) * 160) || 160;
           canvas.width = width;
           canvas.height = height;
           const ctx = canvas.getContext('2d');
@@ -541,6 +521,7 @@
       return Math.abs(currentScore - storedScore) < 2000000;
     }
 
+    /* ===== flow events ===== */
     employeeName.addEventListener('change', () => {
       if (employeeName.value) {
         const entry = getDirectoryEntry(employeeName.value);
@@ -576,15 +557,14 @@
 
     takeSelfie.addEventListener('click', async () => {
       const canvas = document.createElement('canvas');
-      canvas.width = videoPreview.videoWidth;
-      canvas.height = videoPreview.videoHeight;
+      canvas.width = videoPreview.videoWidth || 640;
+      canvas.height = videoPreview.videoHeight || 480;
       const ctx = canvas.getContext('2d');
       ctx.drawImage(videoPreview, 0, 0, canvas.width, canvas.height);
       selfieDataURL = canvas.toDataURL('image/jpeg', 0.8);
       
       stopCamera();
       
-      // Auto-validate and save attendance
       const name = employeeName.value;
       const entry = getDirectoryEntry(name);
 
@@ -603,7 +583,6 @@
         return;
       }
 
-      // Validate photo match
       const match = await compareSelfies(selfieDataURL, storedProfile.photo);
       
       if (!match) {
@@ -695,7 +674,7 @@
         return;
       }
 
-      // Get today's attendance data
+      // Save attendance similarly to the capture handler
       const now = new Date();
       const todayDate = now.toISOString().slice(0, 10);
       const nowTime = now.toTimeString().slice(0, 5);
@@ -706,12 +685,10 @@
       );
 
       if (todayRecord) {
-        // Update with Out time
         todayRecord.outTime = nowTime;
         todayRecord.photo = selfieDataURL;
         showMessage(saveMessage, `✓ Clock-out recorded at ${nowTime}`);
       } else {
-        // Create new record with In time
         const newRecord = {
           name,
           userId: entry.id,
@@ -761,8 +738,210 @@
     setInterval(updateClock, 1000);
 
     populateEmployees();
+
+    /* ===== Admin: import/export/print helpers ===== */
+
+    function parseCSV(text) {
+      // Very small CSV parser: split lines, use first row as headers
+      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+      if (lines.length === 0) return [];
+      const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+      const rows = [];
+      for (let i = 1; i < lines.length; i++) {
+        const cols = lines[i].split(',').map(c => c.trim());
+        const obj = {};
+        for (let j = 0; j < headers.length; j++) {
+          const key = headers[j];
+          obj[key] = cols[j] || '';
+        }
+        // normalize keys to name,id,password,shiftCode
+        rows.push({
+          name: obj.name || obj.fullname || obj.employee || '',
+          id: obj.id || obj.userId || obj.userid || obj.user_id || '',
+          password: obj.password || obj.pw || '',
+          shiftCode: (obj.shiftcode || obj.shift || obj.shift_code || 'A').toUpperCase()
+        });
+      }
+      return rows;
+    }
+
+    function normalizeDirectory(arr) {
+      return arr.map(item => {
+        return {
+          name: (item.name || item.Name || '').toString(),
+          id: (item.id || item.userId || item.userID || item.ID || '').toString(),
+          password: (item.password || item.pw || item.pass || '').toString(),
+          shiftCode: (item.shiftCode || item.shift || 'A').toString().toUpperCase()
+        };
+      }).filter(e => e.name && e.id);
+    }
+
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const text = await file.text();
+      let dir = [];
+      if (file.type.includes('json') || file.name.endsWith('.json')) {
+        try {
+          const parsed = JSON.parse(text);
+          if (Array.isArray(parsed)) dir = normalizeDirectory(parsed);
+          else showMessage(errorMessage, 'JSON must be an array of staff objects');
+        } catch (err) {
+          showMessage(errorMessage, 'Invalid JSON file');
+          return;
+        }
+      } else {
+        // treat as CSV
+        dir = parseCSV(text);
+      }
+      if (dir.length === 0) {
+        showMessage(warningMessage, 'No valid staff found in file');
+        return;
+      }
+      setStoredDirectory(dir);
+      showMessage(saveMessage, `Loaded ${dir.length} staff from file`);
+      fileInput.value = '';
+    });
+
+    loadPastedJson.addEventListener('click', () => {
+      const text = pasteJson.value.trim();
+      if (!text) {
+        showMessage(warningMessage, 'Paste JSON first');
+        return;
+      }
+      try {
+        const parsed = JSON.parse(text);
+        if (!Array.isArray(parsed)) {
+          showMessage(errorMessage, 'JSON must be an array of staff objects');
+          return;
+        }
+        const dir = normalizeDirectory(parsed);
+        if (dir.length === 0) {
+          showMessage(warningMessage, 'No valid staff entries found');
+          return;
+        }
+        setStoredDirectory(dir);
+        showMessage(saveMessage, `Loaded ${dir.length} staff from pasted JSON`);
+        pasteJson.value = '';
+      } catch (err) {
+        showMessage(errorMessage, 'Invalid JSON pasted');
+      }
+    });
+
+    fetchRemote.addEventListener('click', async () => {
+      const url = fetchUrl.value.trim();
+      if (!url) {
+        showMessage(warningMessage, 'Enter a URL first');
+        return;
+      }
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Fetch failed: ' + res.status);
+        const contentType = res.headers.get('content-type') || '';
+        const text = await res.text();
+        let dir = [];
+        if (contentType.includes('application/json') || url.endsWith('.json')) {
+          try {
+            const parsed = JSON.parse(text);
+            if (!Array.isArray(parsed)) { showMessage(errorMessage, 'Remote JSON must be an array'); return; }
+            dir = normalizeDirectory(parsed);
+          } catch (err) {
+            showMessage(errorMessage, 'Invalid JSON at that URL');
+            return;
+          }
+        } else {
+          // try CSV parse
+          dir = parseCSV(text);
+        }
+        if (dir.length === 0) {
+          showMessage(warningMessage, 'No valid staff entries found at URL');
+          return;
+        }
+        setStoredDirectory(dir);
+        showMessage(saveMessage, `Loaded ${dir.length} staff from remote`);
+        fetchUrl.value = '';
+      } catch (err) {
+        console.error(err);
+        showMessage(errorMessage, 'Failed to fetch remote file. Ensure CORS is enabled on the server and the URL is correct.');
+      }
+    });
+
+    exportJson.addEventListener('click', () => {
+      const dir = getStoredDirectory();
+      const data = JSON.stringify(dir, null, 2);
+      const blob = new Blob([data], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'employeeDirectory.json';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    });
+
+    printDirectoryBtn.addEventListener('click', () => {
+      const dir = getStoredDirectory();
+      let html = `<html><head><title>Staff Directory</title><style>
+        body{font-family:Arial,Helvetica,sans-serif;color:#111}
+        table{width:100%;border-collapse:collapse}
+        th,td{border:1px solid #ddd;padding:8px;text-align:left}
+        th{background:#f4f4f4}
+      </style></head><body><h2>Staff Directory</h2><table><thead><tr><th>Name</th><th>ID</th><th>Shift</th></tr></thead><tbody>`;
+      dir.forEach(d => {
+        html += `<tr><td>${escapeHtml(d.name)}</td><td>${escapeHtml(d.id)}</td><td>${escapeHtml(d.shiftCode)}</td></tr>`;
+      });
+      html += `</tbody></table></body></html>`;
+      openPrintWindow(html);
+    });
+
+    printRecordsBtn.addEventListener('click', () => {
+      const records = getStoredRecords();
+      let html = `<html><head><title>Attendance Records</title><style>
+        body{font-family:Arial,Helvetica,sans-serif;color:#111}
+        table{width:100%;border-collapse:collapse}
+        th,td{border:1px solid #ddd;padding:8px;text-align:left}
+        th{background:#f4f4f4}
+      </style></head><body><h2>Attendance Records</h2><table><thead><tr><th>Date</th><th>Name</th><th>In Time</th><th>Out Time</th><th>Shift</th><th>Notes</th></tr></thead><tbody>`;
+      records.forEach(r => {
+        html += `<tr><td>${escapeHtml(r.date||'')}</td><td>${escapeHtml(r.name||'')}</td><td>${escapeHtml(r.inTime||'')}</td><td>${escapeHtml(r.outTime||'')}</td><td>${escapeHtml(r.shiftCode||'')}</td><td>${escapeHtml(r.notes||'')}</td></tr>`;
+      });
+      html += `</tbody></table></body></html>`;
+      openPrintWindow(html);
+    });
+
+    clearDirectoryBtn.addEventListener('click', () => {
+      if (!confirm('Clear the current employee directory? This cannot be undone.')) return;
+      localStorage.removeItem('employeeDirectory');
+      populateEmployees();
+      showMessage(saveMessage, 'Directory cleared. Default directory will be used on next load.');
+    });
+
+    function openPrintWindow(contentHTML) {
+      const w = window.open('', '_blank', 'noopener');
+      w.document.write(contentHTML);
+      w.document.close();
+      w.focus();
+      // Give the new window a moment to render then print
+      setTimeout(() => {
+        w.print();
+      }, 300);
+    }
+
+    function escapeHtml(s) {
+      return (s || '').toString().replace(/[&<>"'\/]/g, function (c) {
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#39;',
+          '/': '&#x2F;'
+        }[c];
+      });
+    }
+
+    /* End of admin helpers */
   </script>
 </body>
 </html>
-
-
