@@ -210,16 +210,32 @@
     a {
       color: #4338ca;
       text-decoration: none;
+      font-weight: 600;
     }
     a:hover {
       text-decoration: underline;
+    }
+    .nav-button {
+      display: inline-block;
+      background: #4338ca;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 600;
+      margin: 5px;
+      transition: all 0.2s ease;
+    }
+    .nav-button:hover {
+      background: #312e81;
+      transform: translateY(-2px);
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>📷 Attendance Check-In</h1>
+      <h1>📷 Staff Attendance Portal</h1>
       <p>Quick selfie capture for automatic attendance recording</p>
       <div id="clockDisplay" style="font-size: 2rem; font-weight: 700; color: #4338ca; margin-top: 16px; font-family: 'Courier New', monospace;">--:--:--</div>
     </div>
@@ -277,7 +293,10 @@
 
     <div class="footer">
       <p>🔒 Your photos are stored locally on this device for profile matching only.</p>
-      <p><a href="employee.html">📊 Admin Portal</a> · <a href="#">❓ Help</a></p>
+      <p>
+        <a href="admin-panel.html" class="nav-button">📊 Admin Panel</a>
+        <a href="staff-attendance.html" class="nav-button">👤 Staff Portal</a>
+      </p>
     </div>
   </div>
 
@@ -299,7 +318,6 @@
       { name: 'Mr. Umesh', id: 'UM014', password: 'UM014', shiftCode: 'A' }
     ];
 
-    // DOM Elements
     const employeeName = document.getElementById('employeeName');
     const attendanceType = document.getElementById('attendanceType');
     const startCamera = document.getElementById('startCamera');
@@ -324,7 +342,6 @@
     let selfieDataURL = '';
     let activeStream = null;
 
-    // Storage Functions
     function getStoredDirectory() {
       const saved = localStorage.getItem('employeeDirectory');
       return saved ? JSON.parse(saved) : defaultDirectory;
@@ -506,7 +523,6 @@
       return Math.abs(currentScore - storedScore) < 2000000;
     }
 
-    // Event Listeners
     employeeName.addEventListener('change', () => {
       if (employeeName.value) {
         const entry = getDirectoryEntry(employeeName.value);
@@ -573,7 +589,6 @@
         return;
       }
 
-      // Validate photo match
       showMessage(warningMessage, '⏳ Verifying your photo...');
       const match = await compareSelfies(selfieDataURL, storedProfile.photo);
       
@@ -586,14 +601,12 @@
         return;
       }
 
-      // Photo matches - Show attendance type selection
       selfiePreview.src = selfieDataURL;
       selfiePreview.style.display = 'block';
       step2.style.display = 'none';
       step3.style.display = 'block';
       stepIndicator.textContent = 'Step 3 of 4: Select attendance type';
       
-      // Check for existing today's record
       const records = getStoredRecords();
       const todayDate = new Date().toISOString().slice(0, 10);
       const todayRecord = records.find(
@@ -645,20 +658,17 @@
         return;
       }
 
-      // Valid - Save attendance
       const now = new Date();
       const todayDate = now.toISOString().slice(0, 10);
       const nowTime = now.toTimeString().slice(0, 5);
       const records = getStoredRecords();
 
       if (type === 'Out') {
-        // Look for existing In record
         const todayRecord = records.find(
           r => r.name === name && r.date === todayDate && r.mode === 'Employee' && r.inTime !== '—'
         );
 
         if (todayRecord && todayRecord.outTime === '—') {
-          // Update with Out time
           todayRecord.outTime = nowTime;
           todayRecord.photo = selfieDataURL;
           saveRecords(records);
@@ -669,7 +679,6 @@
           return;
         }
       } else {
-        // Clock In
         const todayRecord = records.find(
           r => r.name === name && r.date === todayDate && r.mode === 'Employee' && r.inTime !== '—'
         );
@@ -679,7 +688,6 @@
           return;
         }
 
-        // Create new In record
         const newRecord = {
           name,
           userId: entry.id,
@@ -699,7 +707,6 @@
         showSuccessDetail(name, type, nowTime);
       }
 
-      // Show success screen
       successSelfie.src = selfieDataURL;
       successSelfie.style.display = 'block';
       step3.style.display = 'none';
@@ -724,7 +731,6 @@
       resetPortal();
     });
 
-    // Real-time clock
     function updateClock() {
       const now = new Date();
       const hours = String(now.getHours()).padStart(2, '0');
