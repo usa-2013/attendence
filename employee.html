@@ -3,318 +3,540 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Panel - Attendance Management</title>
+  <title>July 2026 Maintenance Shift Schedule</title>
   <style>
     :root {
       color-scheme: light;
       font-family: Inter, Arial, sans-serif;
-      background: #0f172a;
-      color: #fff;
+      background: #eef2ff;
+      color: #111827;
     }
     body {
       margin: 0;
       padding: 0;
       min-height: 100vh;
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
     }
-    .container {
-      max-width: 1200px;
+    .page {
+      max-width: 1280px;
       margin: 0 auto;
       padding: 20px;
     }
-    .header {
-      text-align: center;
-      margin-bottom: 32px;
+    .hero {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
     }
-    .header h1 {
-      margin: 0 0 8px;
-      font-size: 2.2rem;
-      font-weight: 700;
-    }
-    .header p {
+    .hero h1 {
       margin: 0;
-      color: #94a3b8;
-      font-size: 0.95rem;
+      font-size: clamp(2rem, 2.5vw, 2.4rem);
+      line-height: 1.05;
+    }
+    .hero p {
+      margin: 8px 0 0;
+      color: #475569;
+      max-width: 720px;
+      font-size: 0.96rem;
+      line-height: 1.7;
     }
     .nav-links {
       display: flex;
-      gap: 10px;
-      justify-content: center;
-      margin: 20px 0;
       flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
     }
     .nav-links a {
-      color: #fff;
+      padding: 10px 14px;
+      border-radius: 999px;
       text-decoration: none;
       background: #4338ca;
-      padding: 10px 20px;
-      border-radius: 12px;
-      font-weight: 600;
-      transition: all 0.2s ease;
+      color: #ffffff;
+      font-size: 0.9rem;
+      transition: background 0.2s ease;
     }
     .nav-links a:hover {
       background: #312e81;
-      transform: translateY(-2px);
     }
     .card {
-      background: #1e293b;
+      background: #ffffff;
       border-radius: 20px;
+      box-shadow: 0 18px 55px rgba(15, 23, 42, 0.09);
       padding: 24px;
       margin-bottom: 24px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
     }
     .card h2 {
       margin-top: 0;
-      color: #fff;
-      font-size: 1.5rem;
+      color: #111827;
+      font-size: 1.24rem;
+    }
+    .table-wrapper {
+      overflow-x: auto;
+      padding-bottom: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1100px;
+    }
+    th,
+    td {
+      border: 1px solid #e2e8f0;
+      padding: 10px 12px;
+      text-align: center;
+      white-space: nowrap;
+      font-size: 0.86rem;
+    }
+    th {
+      background: #1f2937;
+      color: #f8fafc;
+      font-weight: 700;
+    }
+    td {
+      background: #ffffff;
+      color: #111827;
+    }
+    .row-label {
+      background: #111827;
+      color: #ffffff;
+      text-align: left;
+      font-weight: 700;
+    }
+    .secondary-label {
+      background: #334155;
+      color: #f8fafc;
+      text-align: left;
+      font-weight: 500;
+    }
+    .note {
+      margin-top: 20px;
+      color: #334155;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+    .note strong {
+      color: #0f172a;
+    }
+    .small {
+      font-size: 0.84rem;
+      color: #64748b;
+    }
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
     }
     label {
       display: block;
       margin-bottom: 8px;
-      color: #cbd5e1;
-      font-size: 0.9rem;
-      font-weight: 500;
+      color: #475569;
+      font-size: 0.92rem;
     }
     input,
     select,
-    textarea,
-    button {
+    button,
+    textarea {
       width: 100%;
-      border: 1px solid #475569;
+      border: 1px solid #cbd5e1;
       border-radius: 12px;
-      padding: 12px 14px;
-      font-size: 1rem;
+      padding: 10px 12px;
+      font-size: 0.95rem;
       color: #0f172a;
-      background: #f1f5f9;
-      font-family: inherit;
-      margin-bottom: 14px;
-      box-sizing: border-box;
+      background: #f8fafc;
     }
-    input:focus,
-    select:focus,
-    textarea:focus {
-      outline: none;
-      border-color: #4338ca;
-      box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.1);
+    textarea {
+      min-height: 110px;
+      resize: vertical;
     }
     button {
       cursor: pointer;
       background: #4338ca;
       color: #fff;
       border: none;
-      padding: 14px 20px;
-      font-weight: 600;
-      transition: all 0.2s ease;
+      border-radius: 12px;
+      padding: 12px 16px;
+      transition: transform 0.15s ease, background 0.15s ease;
     }
     button:hover {
       background: #312e81;
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
-    button.danger {
-      background: #dc2626;
+    .summary-table {
+      margin-top: 16px;
+      width: 100%;
+      border-collapse: collapse;
     }
-    button.danger:hover {
-      background: #b91c1c;
+    .summary-table th,
+    .summary-table td {
+      border-color: #e2e8f0;
+      padding: 10px;
+      font-size: 0.92rem;
     }
-    button.success {
-      background: #22c55e;
+    .summary-table th {
+      background: #4338ca;
     }
-    button.success:hover {
-      background: #16a34a;
+    .admin-box {
+      border: 1px solid #c7d2fe;
+      background: #eef2ff;
+      border-radius: 16px;
+      padding: 18px;
     }
     .success {
       border-left: 4px solid #22c55e;
-      background: rgba(34, 197, 94, 0.1);
-      color: #86efac;
+      background: #ecfdf5;
+      color: #164e63;
       padding: 14px 16px;
-      margin-bottom: 16px;
-      border-radius: 12px;
+      margin-bottom: 18px;
+      border-radius: 14px;
     }
-    .error {
-      border-left: 4px solid #dc2626;
-      background: rgba(220, 38, 38, 0.1);
-      color: #fca5a5;
+    .warning {
+      border-left: 4px solid #f59e0b;
+      background: #fffbeb;
+      color: #92400e;
       padding: 14px 16px;
-      margin-bottom: 16px;
-      border-radius: 12px;
-    }
-    .table-wrapper {
-      overflow-x: auto;
-      margin-top: 20px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 900px;
-    }
-    th, td {
-      border: 1px solid #475569;
-      padding: 12px;
-      text-align: left;
-      color: #e2e8f0;
-      font-size: 0.9rem;
-    }
-    th {
-      background: #0f172a;
-      font-weight: 700;
-      color: #cbd5e1;
-    }
-    tr:hover {
-      background: rgba(67, 56, 202, 0.1);
-    }
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-    .admin-badge {
-      display: inline-block;
-      background: #22c55e;
-      color: #0f172a;
-      padding: 4px 12px;
-      border-radius: 12px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      margin-left: 10px;
+      margin-bottom: 18px;
+      border-radius: 14px;
     }
     .footer {
+      margin-top: 24px;
+      font-size: 0.87rem;
+      color: #475569;
       text-align: center;
-      color: #64748b;
-      font-size: 0.85rem;
-      margin-top: 32px;
+    }
+    @media (max-width: 760px) {
+      th,
+      td {
+        white-space: normal;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>📊 Admin Panel <span class="admin-badge" id="adminStatus" style="display:none;">ADMIN ✓</span></h1>
-      <p>Manage employees, view attendance records, and export reports</p>
+  <div class="page">
+    <div class="hero">
+      <div>
+        <h1>July 2026 Maintenance Shift Schedule</h1>
+        <p>View assigned shifts, record attendance with selfie verification, and generate employee- date/month summaries. This system is designed to run on both admin and security office systems for secure attendance tracking.</p>
+        <div id="clockDisplay" style="font-size: 1.4rem; font-weight: 700; color: #4338ca; margin-top: 12px; font-family: 'Courier New', monospace; letter-spacing: 2px;">--:--:--</div>
+      </div>
+      <div class="nav-links">
+        <a href="#schedule">Schedule</a>
+        <a href="#attendance">Attendance</a>
+        <a href="#summary">Summary</a>
+        <a href="#admin">Admin</a>
+      </div>
     </div>
 
-    <div class="nav-links">
-      <a href="staff-attendance.html">👤 Staff Portal</a>
-      <a href="admin-panel.html">📊 Admin Panel</a>
-    </div>
-
-    <div class="card">
-      <h2>🔐 Admin Login</h2>
-      <div id="adminMessage" style="display:none;"></div>
-      <div id="errorMessage" class="error" style="display:none;"></div>
-      <div id="successMessage" class="success" style="display:none;"></div>
-      
+    
+    <div class="card" id="attendance">
+      <h2>Attendance capture</h2>
+      <div class="success" id="saveMessage" style="display:none;"></div>
+      <div class="warning" id="errorMessage" style="display:none;"></div>
       <div class="form-grid">
         <div>
-          <label for="adminId">Admin ID</label>
-          <input id="adminId" type="text" placeholder="Enter admin ID" />
+          <label for="employeeName">Employee Name</label>
+          <select id="employeeName"></select>
+        </div>
+        <div id="userIdBlock">
+          <label for="userId">User ID</label>
+          <input id="userId" type="text" placeholder="Enter employee ID" />
+        </div>
+        <div id="passwordBlock">
+          <label for="password">Password</label>
+          <input id="password" type="password" placeholder="Enter password" />
         </div>
         <div>
-          <label for="adminPassword">Password</label>
-          <input id="adminPassword" type="password" placeholder="Enter password" />
+          <label for="attendanceType">Attendance Type</label>
+          <select id="attendanceType">
+            <option value="In">Clock In</option>
+            <option value="Out">Clock Out</option>
+          </select>
+        </div>
+        <div id="attendanceDateBlock">
+          <label for="attendanceDate">Date</label>
+          <input id="attendanceDate" type="date" />
+        </div>
+        <div id="shiftCodeBlock">
+          <label for="shiftCode">Shift Code</label>
+          <select id="shiftCode">
+            <option value="A">A — 08:00 to 17:00</option>
+            <option value="B">B — 13:00 to 22:00</option>
+            <option value="C">C — 22:00 to 08:00</option>
+            <option value="G">G — 10:00 to 19:00</option>
+          </select>
+        </div>
+        <div>
+          <label for="inTime">In Time</label>
+          <input id="inTime" type="time" />
+        </div>
+        <div>
+          <label for="outTime">Out Time</label>
+          <input id="outTime" type="time" />
+        </div>
+        <div>
+          <label for="systemMode">Portal Mode</label>
+          <select id="systemMode">
+            <option value="Employee">Staff portal</option>
+            <option value="Security">Security office</option>
+          </select>
+        </div>
+        <div>
+          <label>Selfie capture</label>
+          <button type="button" id="startCamera" style="width:100%; margin-bottom:8px;">Start camera</button>
+          <video id="videoPreview" style="display:none; width:100%; border-radius:12px; background:#000;" autoplay muted playsinline></video>
+          <button type="button" id="takeSelfie" style="display:none; width:100%; margin-top:8px;">Capture selfie</button>
+          <img id="selfiePreview" style="display:none; width:100%; border-radius:12px; margin-top:10px; object-fit:cover;" alt="Selfie preview" />
+        </div>
+        <div>
+          <label for="photoUpload">Upload selfie backup</label>
+          <input id="photoUpload" type="file" accept="image/*" />
+        </div>
+        <div>
+          <label for="notes">Notes</label>
+          <textarea id="notes" placeholder="Optional notes or event details"></textarea>
         </div>
       </div>
-      <button id="adminLoginBtn">🔓 Login to Admin Panel</button>
-      <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 16px;">Demo Login: <strong>admin</strong> / <strong>admin123</strong></p>
+      <div style="margin-top:18px; display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+        <button id="saveAttendance">Save attendance</button>
+        <span class="small">Use selfie capture and stored profile matching. Admin name and employee ID are recorded with every attendance entry.</span>
+      </div>
+      <div id="employeeDetailsCard" style="display:none; margin-top:18px; border:1px solid #cbd5e1; border-radius:16px; background:#f8fafc; padding:18px;">
+        <h3 style="margin:0 0 12px; font-size:1.05rem;">Employee detail preview</h3>
+        <div class="form-grid">
+          <div><label>Name</label><div id="detailName"></div></div>
+          <div><label>User ID</label><div id="detailUserId"></div></div>
+          <div><label>Shift code</label><div id="detailShiftCode"></div></div>
+          <div><label>Date</label><div id="detailDate"></div></div>
+          <div><label>Shift window</label><div id="detailShiftWindow"></div></div>
+          <div><label>Portal mode</label><div id="detailMode"></div></div>
+        </div>
+        <p class="small" style="margin-top:12px;">Click the profile or selfie preview after selecting an employee to display the full employee data, shift code, and selected date.</p>
+      </div>
     </div>
 
-    <div id="adminPanel" style="display:none;">
-      <!-- Employee Management -->
-      <div class="card">
-        <h2>👥 Employee Management</h2>
+    <div class="card" id="summary">
+      <h2>Attendance summary</h2>
+      <div class="form-grid" style="margin-bottom: 18px;">
+        <div>
+          <label for="filterMode">Filter by</label>
+          <select id="filterMode">
+            <option value="all">All months</option>
+            <option value="date">date</option>
+            <option value="month">Month</option>
+          </select>
+        </div>
+        <div>
+          <label for="filterEmployee">Employee</label>
+          <select id="filterEmployee">
+            <option value="all">All employees</option>
+          </select>
+        </div>
+        <div id="dateFilter" style="display:none;">
+          <label for="filterDate">Date</label>
+          <input id="filterDate" type="date" />
+        </div>
+        <div id="monthFilter" style="display:none;">
+          <label for="filterMonth">Month</label>
+          <input id="filterMonth" type="month" />
+        </div>
+        <div>
+          <label>&nbsp;</label>
+          <button id="refreshSummary">Refresh summary</button>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="summary-table" id="summaryTable">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Employee</th>
+              <th>User ID</th>
+              <th>Type</th>
+              <th>Shift</th>
+              <th>In</th>
+              <th>Out</th>
+              <th>System Mode</th>
+                      <th>Photo</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="note">
+        <p class="small">Attendance entries are stored locally in the browser for demonstration. For production, connect this portal to a secure server and database.</p>
+      </div>
+    </div>
+
+    <div class="card" id="admin">
+      <h2>Admin permissions</h2>
+      <div class="admin-box">
         <div class="form-grid">
           <div>
-            <label for="empName">Employee Name</label>
-            <input id="empName" type="text" placeholder="Full name" />
+            <label for="adminId">Admin ID</label>
+            <input id="adminId" type="text" placeholder="Enter admin ID" />
           </div>
           <div>
-            <label for="empId">User ID</label>
-            <input id="empId" type="text" placeholder="E.g., CH001" />
+            <label for="adminPassword">Admin password</label>
+            <input id="adminPassword" type="password" placeholder="Enter admin password" />
           </div>
-          <div>
-            <label for="empPassword">Password</label>
-            <input id="empPassword" type="password" placeholder="Password" />
-          </div>
-          <div>
-            <label for="empShift">Shift Code</label>
-            <select id="empShift">
-              <option value="A">A — 08:00 to 17:00</option>
-              <option value="B">B — 13:00 to 22:00</option>
-              <option value="C">C — 22:00 to 08:00</option>
-              <option value="G">G — 10:00 to 19:00</option>
-            </select>
+          <div style="align-self:end;">
+            <button id="adminLogin">Unlock admin controls</button>
           </div>
         </div>
-        <button id="addEmployeeBtn" class="success">➕ Add / Update Employee</button>
-        <button id="deleteEmployeeBtn" class="danger" style="margin-top: 10px;">❌ Delete Employee</button>
-      </div>
-
-      <!-- Employee Photo Registration -->
-      <div class="card">
-        <h2>📷 Employee Profile Photo</h2>
-        <label for="photoEmployee">Select Employee</label>
-        <select id="photoEmployee">
-          <option value="">-- Select employee --</option>
-        </select>
-        <label style="margin-top: 16px;">Upload Photo</label>
-        <input id="photoUpload" type="file" accept="image/*" />
-        <button id="savePhotoBtn" class="success">💾 Save Profile Photo</button>
-      </div>
-
-      <!-- Attendance Records -->
-      <div class="card">
-        <h2>📅 Attendance Records</h2>
-        <div class="form-grid">
-          <div>
-            <label for="filterEmployee">Filter by Employee</label>
-            <select id="filterEmployee">
-              <option value="all">All employees</option>
-            </select>
+        <div id="adminControls" style="display:none; margin-top:18px;">
+          <p class="small">Admin mode allows schedule edits, attendance deletion, and employee management. Use only with proper authorization.</p>
+          <p class="small">Registered employees are added once by admin, then staff can take attendance with photo capture and In/Out selection.</p>
+          <div class="form-grid" style="margin-top:18px;">
+            <div>
+              <label for="addEmployeeName">Employee name</label>
+              <input id="addEmployeeName" type="text" placeholder="Enter employee name" />
+            </div>
+            <div>
+              <label for="addEmployeeId">User ID</label>
+              <input id="addEmployeeId" type="text" placeholder="Enter user ID" />
+            </div>
+            <div>
+              <label for="addEmployeePassword">Password</label>
+              <input id="addEmployeePassword" type="text" placeholder="Enter password" />
+            </div>
+            <div>
+              <label for="addEmployeeShift">Shift code</label>
+              <select id="addEmployeeShift">
+                <option value="A">A — 08:00 to 17:00</option>
+                <option value="B">B — 13:00 to 22:00</option>
+                <option value="C">C — 22:00 to 08:00</option>
+                <option value="G">G — 10:00 to 19:00</option>
+              </select>
+            </div>
           </div>
-          <div>
-            <label for="filterMonth">Filter by Month</label>
-            <input id="filterMonth" type="month" value="2026-07" />
+          <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+            <button id="addEmployee">Add / Update employee</button>
+            <button id="deleteEmployee" style="background:#dc2626;">Delete selected employee</button>
           </div>
-        </div>
-        <button id="refreshBtn" class="success">🔄 Refresh Records</button>
-        <button id="printBtn" class="success" style="margin-top: 10px;">🖨️ Print</button>
-        <button id="exportBtn" class="success" style="margin-top: 10px;">📊 Export CSV</button>
-        <button id="deleteAllBtn" class="danger" style="margin-top: 10px;">⚠️ Clear All Records</button>
-        
-        <div class="table-wrapper">
-          <table id="attendanceTable">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Employee</th>
-                <th>User ID</th>
-                <th>Clock In</th>
-                <th>Clock Out</th>
-                <th>Shift</th>
-                <th>Mode</th>
-                <th>Notes</th>
-              </tr>
-            </thead>
-            <tbody id="attendanceBody">
-              <tr>
-                <td colspan="8" style="text-align: center; color: #94a3b8;">No records found</td>
-              </tr>
-            </tbody>
-          </table>
+          <div style="margin-top:18px;">
+            <label>Profile photo</label>
+            <button type="button" id="startProfileCamera" style="width:100%; margin-bottom:8px;">Start profile camera</button>
+            <video id="profileVideoPreview" style="display:none; width:100%; border-radius:12px; background:#000;" autoplay muted playsinline></video>
+            <button type="button" id="captureProfilePhoto" style="display:none; width:100%; margin-top:8px;">Capture profile photo</button>
+            <img id="profilePreview" style="display:none; width:100%; border-radius:12px; margin-top:10px; object-fit:cover;" alt="Profile preview" />
+            <input id="profilePhotoUpload" type="file" accept="image/*" style="width:100%; margin-top:10px;" />
+          </div>
+          <div id="employeeList" style="margin-top:18px;">
+            <h3 style="margin-bottom:8px;">Registered employees</h3>
+            <ul id="employeeListItems" style="margin:0; padding-left:18px; color:#1f2937;"></ul>
+          </div>
+          <button id="clearEntries" style="background:#dc2626; margin-top:18px;">Clear all attendance records</button>
+          <p class="note">Admin login for demo: <strong>admin / admin12345*</strong></p>
         </div>
       </div>
+    </div>
 
-      <!-- Registered Employees List -->
-      <div class="card">
-        <h2>📋 Registered Employees</h2>
-        <ul id="employeesList" style="margin: 0; padding-left: 20px; color: #e2e8f0;">
-          <li style="color: #94a3b8;">No employees yet</li>
-        </ul>
-      </div>
+    <div class="footer">
+      <p>Employee portal: <a href="#attendance">Attendance Entry</a> · Admin portal: <a href="#admin">Admin Tools</a></p>
     </div>
   </div>
 
   <script>
+    const employees = [
+      'Mr. Chandrapal',
+      'Mr. Shrichand',
+      'MR. DINESH',
+      'Mr. DEVARAO',
+      'Mr. Arun Jat',
+      'Mr. Sunny',
+      'Mr. Rahul',
+      'Mr. Rajkumar',
+      'Mr. Ajeet',
+      'Mr. Mohan',
+      'Mr. Vikram',
+      'Mr. Bigyan',
+      'Mr. Indrapal',
+      'Mr. Umesh'
+    ];
+
+    const employeeName = document.getElementById('employeeName');
+    const userId = document.getElementById('userId');
+    const password = document.getElementById('password');
+    const attendanceType = document.getElementById('attendanceType');
+    const attendanceDate = document.getElementById('attendanceDate');
+    const shiftCode = document.getElementById('shiftCode');
+    const inTime = document.getElementById('inTime');
+    const outTime = document.getElementById('outTime');
+    const systemMode = document.getElementById('systemMode');
+    const photoUpload = document.getElementById('photoUpload');
+    const notes = document.getElementById('notes');
+    const addEmployeeName = document.getElementById('addEmployeeName');
+    const addEmployeeId = document.getElementById('addEmployeeId');
+    const addEmployeePassword = document.getElementById('addEmployeePassword');
+    const addEmployeeShift = document.getElementById('addEmployeeShift');
+    const addEmployee = document.getElementById('addEmployee');
+    const deleteEmployee = document.getElementById('deleteEmployee');
+    const employeeListItems = document.getElementById('employeeListItems');
+    const userIdBlock = document.getElementById('userIdBlock');
+    const passwordBlock = document.getElementById('passwordBlock');
+    const attendanceDateBlock = document.getElementById('attendanceDateBlock');
+    const shiftCodeBlock = document.getElementById('shiftCodeBlock');
+    const startCamera = document.getElementById('startCamera');
+    const takeSelfie = document.getElementById('takeSelfie');
+    const videoPreview = document.getElementById('videoPreview');
+    const selfiePreview = document.getElementById('selfiePreview');
+    const saveAttendance = document.getElementById('saveAttendance');
+    const saveRow = saveAttendance.parentElement;
+    const adminId = document.getElementById('adminId');
+    const adminPassword = document.getElementById('adminPassword');
+    const adminLogin = document.getElementById('adminLogin');
+    const startProfileCamera = document.getElementById('startProfileCamera');
+    const captureProfilePhoto = document.getElementById('captureProfilePhoto');
+    const profileVideoPreview = document.getElementById('profileVideoPreview');
+    const profilePreview = document.getElementById('profilePreview');
+    const profilePhotoUpload = document.getElementById('profilePhotoUpload');
+    const employeeDetailsCard = document.getElementById('employeeDetailsCard');
+    const detailName = document.getElementById('detailName');
+    const detailUserId = document.getElementById('detailUserId');
+    const detailShiftCode = document.getElementById('detailShiftCode');
+    const detailDate = document.getElementById('detailDate');
+    const detailShiftWindow = document.getElementById('detailShiftWindow');
+    const detailMode = document.getElementById('detailMode');
+    const saveMessage = document.getElementById('saveMessage');
+    const errorMessage = document.getElementById('errorMessage');
+    const summaryTable = document.getElementById('summaryTable').querySelector('tbody');
+    const filterMode = document.getElementById('filterMode');
+    const filterEmployee = document.getElementById('filterEmployee');
+    const dateFilter = document.getElementById('dateFilter');
+    const monthFilter = document.getElementById('monthFilter');
+    const filterDate = document.getElementById('filterDate');
+    const filterMonth = document.getElementById('filterMonth');
+    const refreshSummary = document.getElementById('refreshSummary');
+    const adminControls = document.getElementById('adminControls');
+    const clearEntries = document.getElementById('clearEntries');
+
+    let selfieDataURL = '';
+    let activeStream = null;
+    let profilePhotoDataURL = '';
+    let profileStream = null;
+
+    const adminCredentials = {
+      id: 'admin',
+      password: 'admin123'
+    };
+
+    function getStoredProfiles() {
+      const saved = localStorage.getItem('employeeProfilePhotos');
+      return saved ? JSON.parse(saved) : {};
+    }
+
+    function saveStoredProfiles(profiles) {
+      localStorage.setItem('employeeProfilePhotos', JSON.stringify(profiles));
+    }
+
     const defaultDirectory = [
       { name: 'Mr. Chandrapal', id: 'CH001', password: 'CH001', shiftCode: 'A' },
       { name: 'Mr. Shrichand', id: 'SH002', password: 'SH002', shiftCode: 'A' },
@@ -332,47 +554,419 @@
       { name: 'Mr. Umesh', id: 'UM014', password: 'UM014', shiftCode: 'A' }
     ];
 
-    const adminCredentials = { id: 'admin', password: 'admin123' };
-    let isAdminLoggedIn = false;
-
-    // DOM Elements
-    const adminId = document.getElementById('adminId');
-    const adminPassword = document.getElementById('adminPassword');
-    const adminLoginBtn = document.getElementById('adminLoginBtn');
-    const adminPanel = document.getElementById('adminPanel');
-    const adminStatus = document.getElementById('adminStatus');
-    const errorMessage = document.getElementById('errorMessage');
-    const successMessage = document.getElementById('successMessage');
-
-    const empName = document.getElementById('empName');
-    const empId = document.getElementById('empId');
-    const empPassword = document.getElementById('empPassword');
-    const empShift = document.getElementById('empShift');
-    const addEmployeeBtn = document.getElementById('addEmployeeBtn');
-    const deleteEmployeeBtn = document.getElementById('deleteEmployeeBtn');
-
-    const photoEmployee = document.getElementById('photoEmployee');
-    const photoUpload = document.getElementById('photoUpload');
-    const savePhotoBtn = document.getElementById('savePhotoBtn');
-
-    const filterEmployee = document.getElementById('filterEmployee');
-    const filterMonth = document.getElementById('filterMonth');
-    const refreshBtn = document.getElementById('refreshBtn');
-    const printBtn = document.getElementById('printBtn');
-    const exportBtn = document.getElementById('exportBtn');
-    const deleteAllBtn = document.getElementById('deleteAllBtn');
-    const attendanceBody = document.getElementById('attendanceBody');
-    const employeesList = document.getElementById('employeesList');
-
-    // Storage Functions
     function getStoredDirectory() {
       const saved = localStorage.getItem('employeeDirectory');
-      return saved ? JSON.parse(saved) : defaultDirectory;
+      return saved ? JSON.parse(saved) : null;
     }
 
-    function saveStoredDirectory(dir) {
-      localStorage.setItem('employeeDirectory', JSON.stringify(dir));
+    function saveStoredDirectory(directory) {
+      localStorage.setItem('employeeDirectory', JSON.stringify(directory));
     }
+
+    function initializeDirectory() {
+      let directory = getStoredDirectory();
+      if (!directory) {
+        directory = defaultDirectory;
+        saveStoredDirectory(directory);
+      }
+      return directory;
+    }
+
+    function renderEmployeeDirectory() {
+      const directory = initializeDirectory();
+      employeeListItems.innerHTML = '';
+      directory.forEach(entry => {
+        const item = document.createElement('li');
+        item.textContent = `${entry.name} — ${entry.id} — ${entry.shiftCode}`;
+        item.style.cursor = 'pointer';
+        item.addEventListener('click', () => {
+          employeeName.value = entry.name;
+          showEmployeeDetails(entry.name);
+        });
+        employeeListItems.appendChild(item);
+      });
+      return directory;
+    }
+
+    function getDirectoryEntry(name) {
+      const directory = initializeDirectory();
+      return directory.find(entry => entry.name === name) || null;
+    }
+
+    function populateEmployeeOptions() {
+      const directory = renderEmployeeDirectory();
+      employeeName.innerHTML = '';
+      filterEmployee.innerHTML = '<option value="all">All employees</option>';
+      directory.forEach(entry => {
+        const option = document.createElement('option');
+        option.value = entry.name;
+        option.textContent = entry.name;
+        employeeName.appendChild(option);
+        const filterOpt = document.createElement('option');
+        filterOpt.value = entry.name;
+        filterOpt.textContent = entry.name;
+        filterEmployee.appendChild(filterOpt);
+      });
+    }
+
+    function showMessage(element, text) {
+      element.textContent = text;
+      element.style.display = 'block';
+      setTimeout(() => {
+        element.style.display = 'none';
+      }, 4200);
+    }
+
+    async function getImageScore(imageUrl) {
+      return new Promise(resolve => {
+        const image = new Image();
+        image.crossOrigin = 'anonymous';
+        image.onload = () => {
+          const canvas = document.createElement('canvas');
+          const width = 160;
+          const height = Math.round((image.height / image.width) * 160);
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(image, 0, 0, width, height);
+          const data = ctx.getImageData(0, 0, width, height).data;
+          let total = 0;
+          for (let i = 0; i < data.length; i += 4) {
+            total += data[i] + data[i + 1] + data[i + 2];
+          }
+          resolve(total);
+        };
+        image.onerror = () => resolve(0);
+        image.src = imageUrl;
+      });
+    }
+
+    async function compareSelfies(currentPhoto, storedPhoto) {
+      if (!currentPhoto || !storedPhoto) return false;
+      const currentScore = await getImageScore(currentPhoto);
+      const storedScore = await getImageScore(storedPhoto);
+      return Math.abs(currentScore - storedScore) < 2000000;
+    }
+
+    function stopCamera() {
+      if (activeStream) {
+        activeStream.getTracks().forEach(track => track.stop());
+        activeStream = null;
+      }
+      videoPreview.style.display = 'none';
+      takeSelfie.style.display = 'none';
+    }
+
+    function stopProfileCamera() {
+      if (profileStream) {
+        profileStream.getTracks().forEach(track => track.stop());
+        profileStream = null;
+      }
+      profileVideoPreview.style.display = 'none';
+      captureProfilePhoto.style.display = 'none';
+    }
+
+    function updateProfilePreview(dataUrl) {
+      profilePhotoDataURL = dataUrl;
+      profilePreview.src = dataUrl;
+      profilePreview.style.display = 'block';
+    }
+
+    function getShiftWindow(code) {
+      const map = {
+        A: { start: '08:00', end: '17:00' },
+        B: { start: '13:00', end: '22:00' },
+        C: { start: '22:00', end: '08:00' },
+        G: { start: '10:00', end: '19:00' }
+      };
+      return map[code] || { start: '00:00', end: '23:59' };
+    }
+
+    function toMinutes(time) {
+      const [hours, minutes] = time.split(':').map(Number);
+      return hours * 60 + minutes;
+    }
+
+    function isShiftTimeValid(code, inValue, outValue) {
+      const window = getShiftWindow(code);
+      const inMinutes = toMinutes(inValue);
+      let outMinutes = toMinutes(outValue);
+      if (code === 'C' && outMinutes <= inMinutes) {
+        outMinutes += 24 * 60;
+      }
+      const expectedStart = toMinutes(window.start);
+      let expectedEnd = toMinutes(window.end);
+      if (code === 'C') expectedEnd += 24 * 60;
+      const startMatch = Math.abs(inMinutes - expectedStart) <= 90;
+      const endMatch = Math.abs(outMinutes - expectedEnd) <= 90;
+      return startMatch && endMatch;
+    }
+
+    function resetForm() {
+      userId.value = '';
+      password.value = '';
+      attendanceType.value = 'In';
+      attendanceDate.value = '';
+      shiftCode.value = 'A';
+      inTime.value = '';
+      outTime.value = '';
+      systemMode.value = 'Employee';
+      photoUpload.value = '';
+      notes.value = '';
+      selfieDataURL = '';
+      selfiePreview.src = '';
+      selfiePreview.style.display = 'none';
+      employeeDetailsCard.style.display = 'none';
+      stopCamera();
+      updatePortalView();
+    }
+
+    function updatePortalView() {
+      const isStaff = systemMode.value === 'Employee';
+      userIdBlock.style.display = isStaff ? 'none' : 'block';
+      passwordBlock.style.display = isStaff ? 'none' : 'block';
+      attendanceDateBlock.style.display = isStaff ? 'none' : 'block';
+      shiftCodeBlock.style.display = isStaff ? 'none' : 'block';
+      saveRow.style.display = isStaff ? 'none' : 'flex';
+      
+      // For staff mode, ensure date is set to today
+      if (isStaff) {
+        attendanceDate.value = new Date().toISOString().slice(0,10);
+        const selected = getDirectoryEntry(employeeName.value);
+        if (selected) {
+          shiftCode.value = selected.shiftCode;
+        }
+      }
+    }
+
+    function showEmployeeDetails(name) {
+      const entry = getDirectoryEntry(name);
+      if (!entry) {
+        showMessage(errorMessage, 'Select an employee and then click the photo to view details.');
+        return;
+      }
+
+      const date = attendanceDate.value || new Date().toISOString().slice(0,10);
+      const shiftWindow = getShiftWindow(entry.shiftCode);
+      detailName.textContent = entry.name;
+      detailUserId.textContent = entry.id;
+      detailShiftCode.textContent = entry.shiftCode;
+      detailDate.textContent = date;
+      detailShiftWindow.textContent = `${shiftWindow.start} - ${shiftWindow.end}`;
+      detailMode.textContent = systemMode.value;
+      employeeDetailsCard.style.display = 'block';
+    }
+
+    async function readFileAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function captureSelfie() {
+      return new Promise((resolve) => {
+        if (!activeStream) {
+          resolve();
+          return;
+        }
+        // Small delay to ensure video is fully loaded
+        setTimeout(() => {
+          const canvas = document.createElement('canvas');
+          canvas.width = videoPreview.videoWidth;
+          canvas.height = videoPreview.videoHeight;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(videoPreview, 0, 0, canvas.width, canvas.height);
+          selfieDataURL = canvas.toDataURL('image/jpeg', 0.8);
+          selfiePreview.src = selfieDataURL;
+          selfiePreview.style.display = 'block';
+          stopCamera();
+          resolve();
+        }, 100);
+      });
+    }
+
+    saveAttendance.addEventListener('click', async () => {
+      const name = employeeName.value;
+      const directoryEntry = getDirectoryEntry(name);
+      const id = directoryEntry ? directoryEntry.id : userId.value.trim();
+      const pass = directoryEntry ? directoryEntry.password : password.value.trim();
+      const type = attendanceType.value;
+      const mode = systemMode.value;
+      const date = attendanceDate.value;
+      const shift = directoryEntry ? directoryEntry.shiftCode : shiftCode.value;
+      let inVal = inTime.value;
+      let outVal = outTime.value;
+      const noteValue = notes.value.trim();
+
+      if (!name || !date) {
+        showMessage(errorMessage, 'Please select employee and date.');
+        return;
+      }
+
+      if (!directoryEntry) {
+        showMessage(errorMessage, 'Employee is not registered. Admin must add the employee first.');
+        return;
+      }
+
+      // load selfie from camera or upload
+      if (!selfieDataURL && photoUpload.files.length) {
+        selfieDataURL = await readFileAsDataUrl(photoUpload.files[0]);
+        selfiePreview.src = selfieDataURL;
+        selfiePreview.style.display = 'block';
+      }
+
+      if (!selfieDataURL) {
+        showMessage(errorMessage, 'Please capture a selfie or upload a backup photo to match the employee profile.');
+        return;
+      }
+
+      const profileKey = `${name}::${id}`;
+      const profiles = getStoredProfiles();
+      const storedProfile = profiles[profileKey];
+
+      if (!storedProfile) {
+        showMessage(errorMessage, 'Employee profile is not registered. Admin must register the employee and profile photo first.');
+        return;
+      }
+
+      const match = await compareSelfies(selfieDataURL, storedProfile.photo);
+      if (!match) {
+        showMessage(errorMessage, 'Selfie did not match the stored employee profile. Attendance not recorded.');
+        return;
+      }
+
+      // Auto-fill in/out time if not provided based on attendance type
+      const now = new Date();
+      const nowTime = now.toTimeString().slice(0,5);
+      if (type === 'In') {
+        if (!inVal) inVal = nowTime;
+      } else {
+        if (!outVal) outVal = nowTime;
+      }
+
+      // Validate shift window but allow save (warn only)
+      if (!isShiftTimeValid(shift, inVal || '00:00', outVal || '00:00')) {
+        showMessage(errorMessage, 'Warning: selected shift does not match the captured in/out time. Record will be saved.');
+      }
+
+      // For staff mode, check if we should update existing same-day record instead of creating new
+      const existing = getStoredRecords();
+      let existingRecord = null;
+      
+      if (mode === 'Employee') {
+        // Find existing record for today
+        existingRecord = existing.find(
+          r => r.name === name && r.date === date && r.mode === 'Employee'
+        );
+      }
+
+      if (existingRecord) {
+        // Update existing record with Out time
+        existingRecord.outTime = outVal || nowTime || '—';
+        existingRecord.photo = selfieDataURL; // Update photo
+        if (noteValue) existingRecord.notes = noteValue;
+      } else {
+        // Create new record
+        const record = {
+          name,
+          userId: id,
+          password: pass,
+          mode,
+          type,
+          date,
+          shiftCode: shift,
+          inTime: inVal || '—',
+          outTime: outVal || '—',
+          notes: noteValue,
+          photo: selfieDataURL
+        };
+        existing.push(record);
+      }
+      
+      saveRecords(existing);
+      showMessage(saveMessage, 'Attendance saved successfully.');
+      resetForm();
+      buildSummary();
+    });
+
+    startCamera.addEventListener('click', async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+        activeStream = stream;
+        videoPreview.srcObject = stream;
+        videoPreview.style.display = 'block';
+        takeSelfie.style.display = 'inline-block';
+      } catch (error) {
+        showMessage(errorMessage, 'Unable to access the camera. Please allow camera permissions or use the upload option.');
+      }
+    });
+
+    takeSelfie.addEventListener('click', async () => {
+      const isStaffMode = systemMode.value === 'Employee';
+      const selectedEmployee = employeeName.value;
+
+      if (!selectedEmployee) {
+        showMessage(errorMessage, 'Please select your name first.');
+        return;
+      }
+
+      const entry = getDirectoryEntry(selectedEmployee);
+      if (!entry) {
+        showMessage(errorMessage, 'Employee not found in directory.');
+        return;
+      }
+
+      // Capture the selfie
+      await captureSelfie();
+
+      if (!selfieDataURL) {
+        showMessage(errorMessage, 'Failed to capture selfie. Please try again.');
+        return;
+      }
+
+      if (isStaffMode) {
+        // Auto-fill required fields for staff auto-save
+        const now = new Date();
+        const todayDate = now.toISOString().slice(0, 10);
+        const nowTime = now.toTimeString().slice(0, 5);
+
+        // Set date to today
+        attendanceDate.value = todayDate;
+
+        // Set shift code from directory
+        shiftCode.value = entry.shiftCode;
+
+        // Auto-detect In or Out based on previous records
+        const records = getStoredRecords();
+        const todayRecords = records.filter(
+          r => r.name === selectedEmployee && r.date === todayDate
+        );
+
+        let type = 'In';
+        // If no record today, it's In; if one exists, it's Out
+        if (todayRecords.length === 0) {
+          type = 'In';
+        } else {
+          type = 'Out';
+        }
+        attendanceType.value = type;
+
+        // Auto-fill time
+        if (type === 'In') {
+          inTime.value = nowTime;
+          outTime.value = '';
+        } else {
+          inTime.value = '';
+          outTime.value = nowTime;
+        }
+
+        // Auto-save immediately
+        await saveAttendance.click();
+      }
+    });
 
     function getStoredRecords() {
       const saved = localStorage.getItem('attendanceRecords');
@@ -383,280 +977,212 @@
       localStorage.setItem('attendanceRecords', JSON.stringify(records));
     }
 
-    function getStoredProfiles() {
-      const saved = localStorage.getItem('employeeProfilePhotos');
-      return saved ? JSON.parse(saved) : {};
-    }
-
-    function saveStoredProfiles(profiles) {
-      localStorage.setItem('employeeProfilePhotos', JSON.stringify(profiles));
-    }
-
-    function showMessage(element, text) {
-      element.textContent = text;
-      element.style.display = 'block';
-      setTimeout(() => {
-        element.style.display = 'none';
-      }, 5000);
-    }
-
-    function initializeDirectory() {
-      let directory = getStoredDirectory();
-      if (directory.length === 0) {
-        directory = defaultDirectory;
-        saveStoredDirectory(directory);
-      }
-      return directory;
-    }
-
-    function populateEmployeeSelects() {
-      const directory = initializeDirectory();
-      filterEmployee.innerHTML = '<option value="all">All employees</option>';
-      photoEmployee.innerHTML = '<option value="">-- Select employee --</option>';
-      directory.forEach(emp => {
-        const opt1 = document.createElement('option');
-        opt1.value = emp.name;
-        opt1.textContent = emp.name;
-        filterEmployee.appendChild(opt1);
-
-        const opt2 = document.createElement('option');
-        opt2.value = emp.name;
-        opt2.textContent = emp.name;
-        photoEmployee.appendChild(opt2);
-      });
-    }
-
-    function updateEmployeesList() {
-      const directory = initializeDirectory();
-      employeesList.innerHTML = '';
-      if (directory.length === 0) {
-        employeesList.innerHTML = '<li style="color: #94a3b8;">No employees registered</li>';
-        return;
-      }
-      directory.forEach(emp => {
-        const li = document.createElement('li');
-        li.textContent = `${emp.name} (${emp.id}) - Shift ${emp.shiftCode}`;
-        employeesList.appendChild(li);
-      });
-    }
-
-    function buildAttendanceTable() {
+    function buildSummary() {
       const records = getStoredRecords();
-      const employee = filterEmployee.value;
-      const month = filterMonth.value;
+      const mode = filterMode.value;
+      const dateValue = filterDate.value;
+      const monthValue = filterMonth.value;
+      summaryTable.innerHTML = '';
 
-      const filtered = records.filter(r => {
-        if (employee !== 'all' && r.name !== employee) return false;
-        if (month && !r.date.startsWith(month)) return false;
+      const filtered = records.filter(record => {
+        if (filterEmployee.value !== 'all' && record.name !== filterEmployee.value) {
+          return false;
+        }
+        if (mode === 'date' && dateValue) {
+          return record.date === dateValue;
+        }
+        if (mode === 'month' && monthValue) {
+          return record.date.startsWith(monthValue);
+        }
         return true;
       });
 
-      attendanceBody.innerHTML = '';
-      if (filtered.length === 0) {
-        attendanceBody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #94a3b8;">No records found</td></tr>';
+      if (!filtered.length) {
+        const row = document.createElement('tr');
+        row.innerHTML = '<td colspan="10" style="text-align:center; color:#475569;">No attendance records found for the selected filter.</td>';
+        summaryTable.appendChild(row);
         return;
       }
 
       filtered.forEach(record => {
         const row = document.createElement('tr');
+        const photoCell = record.photo ? `<a href="${record.photo}" target="_blank">View</a>` : '—';
         row.innerHTML = `
           <td>${record.date}</td>
           <td>${record.name}</td>
           <td>${record.userId}</td>
+          <td>${record.type || '—'}</td>
+          <td>${record.shiftCode}</td>
           <td>${record.inTime}</td>
           <td>${record.outTime}</td>
-          <td>${record.shiftCode}</td>
           <td>${record.mode || '—'}</td>
+          <td>${photoCell}</td>
           <td>${record.notes || '—'}</td>
         `;
-        attendanceBody.appendChild(row);
+        summaryTable.appendChild(row);
       });
     }
 
-    // Admin Login
-    adminLoginBtn.addEventListener('click', () => {
+    filterMode.addEventListener('change', () => {
+      dateFilter.style.display = 'none';
+      monthFilter.style.display = 'none';
+      if (filterMode.value === 'date') {
+        dateFilter.style.display = 'block';
+      } else if (filterMode.value === 'month') {
+        monthFilter.style.display = 'block';
+      }
+    });
+
+    filterEmployee.addEventListener('change', buildSummary);
+    refreshSummary.addEventListener('click', buildSummary);
+    adminLogin.addEventListener('click', () => {
       if (adminId.value.trim() === adminCredentials.id && adminPassword.value === adminCredentials.password) {
-        isAdminLoggedIn = true;
-        adminPanel.style.display = 'block';
-        adminStatus.style.display = 'inline-block';
-        showMessage(successMessage, '✓ Admin login successful');
-        initializeDirectory();
-        populateEmployeeSelects();
-        updateEmployeesList();
-        buildAttendanceTable();
+        adminControls.style.display = 'block';
+        renderEmployeeDirectory();
+        populateEmployeeOptions();
+        updatePortalView();
+        showMessage(saveMessage, 'Admin controls enabled.');
       } else {
-        showMessage(errorMessage, '❌ Invalid admin credentials');
+        showMessage(errorMessage, 'Incorrect admin ID or password.');
       }
       adminPassword.value = '';
     });
 
-    // Add/Update Employee
-    addEmployeeBtn.addEventListener('click', () => {
-      if (!isAdminLoggedIn) {
-        showMessage(errorMessage, '❌ Admin login required');
+    addEmployee.addEventListener('click', () => {
+      const name = addEmployeeName.value.trim();
+      const id = addEmployeeId.value.trim();
+      const pass = addEmployeePassword.value.trim();
+      const shift = addEmployeeShift.value;
+      if (!name || !id || !pass) {
+        showMessage(errorMessage, 'Enter employee name, user ID and password to add or update.');
         return;
       }
-
-      const name = empName.value.trim();
-      const id = empId.value.trim();
-      const pwd = empPassword.value.trim();
-      const shift = empShift.value;
-
-      if (!name || !id || !pwd) {
-        showMessage(errorMessage, '❌ All fields required');
-        return;
-      }
-
       const directory = initializeDirectory();
-      const existing = directory.find(e => e.name === name);
-
+      const existing = directory.find(entry => entry.name === name);
+      const previousKey = existing ? `${existing.name}::${existing.id}` : null;
+      const profileKey = `${name}::${id}`;
       if (existing) {
         existing.id = id;
-        existing.password = pwd;
+        existing.password = pass;
         existing.shiftCode = shift;
       } else {
-        directory.push({ name, id, password: pwd, shiftCode: shift });
+        directory.push({ name, id, password: pass, shiftCode: shift });
       }
-
-      saveStoredDirectory(directory);
-      populateEmployeeSelects();
-      updateEmployeesList();
-      showMessage(successMessage, '✓ Employee saved successfully');
-      empName.value = '';
-      empId.value = '';
-      empPassword.value = '';
-      empShift.value = 'A';
-    });
-
-    // Delete Employee
-    deleteEmployeeBtn.addEventListener('click', () => {
-      if (!isAdminLoggedIn) {
-        showMessage(errorMessage, '❌ Admin login required');
-        return;
-      }
-
-      const name = empName.value.trim();
-      if (!name) {
-        showMessage(errorMessage, '❌ Select employee to delete');
-        return;
-      }
-
-      if (!confirm(`Delete employee: ${name}?`)) return;
-
-      let directory = initializeDirectory();
-      directory = directory.filter(e => e.name !== name);
       saveStoredDirectory(directory);
 
       const profiles = getStoredProfiles();
-      delete profiles[`${name}::*`];
-      saveStoredProfiles(profiles);
-
-      populateEmployeeSelects();
-      updateEmployeesList();
-      showMessage(successMessage, '✓ Employee deleted');
-      empName.value = '';
-    });
-
-    // Save Employee Photo
-    savePhotoBtn.addEventListener('click', async () => {
-      if (!isAdminLoggedIn) {
-        showMessage(errorMessage, '❌ Admin login required');
-        return;
+      if (previousKey && previousKey !== profileKey && profiles[previousKey]) {
+        profiles[profileKey] = profiles[previousKey];
+        delete profiles[previousKey];
+      }
+      if (profilePhotoDataURL) {
+        profiles[profileKey] = {
+          photo: profilePhotoDataURL,
+          registeredAt: new Date().toISOString()
+        };
+        saveStoredProfiles(profiles);
       }
 
-      const name = photoEmployee.value;
+      renderEmployeeDirectory();
+      populateEmployeeOptions();
+      showMessage(saveMessage, 'Employee record saved. Staff can now use the portal.');
+      addEmployeeName.value = '';
+      addEmployeeId.value = '';
+      addEmployeePassword.value = '';
+      profilePhotoUpload.value = '';
+      profilePreview.src = '';
+      profilePreview.style.display = 'none';
+      profilePhotoDataURL = '';
+    });
+
+    deleteEmployee.addEventListener('click', () => {
+      const name = addEmployeeName.value.trim() || employeeName.value;
       if (!name) {
-        showMessage(errorMessage, '❌ Select employee');
+        showMessage(errorMessage, 'Select or enter an employee name to delete.');
         return;
       }
-
-      if (!photoUpload.files.length) {
-        showMessage(errorMessage, '❌ Select a photo');
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        const directory = initializeDirectory();
-        const emp = directory.find(e => e.name === name);
-        if (emp) {
-          const profiles = getStoredProfiles();
-          profiles[`${name}::${emp.id}`] = {
-            photo: reader.result,
-            registeredAt: new Date().toISOString()
-          };
+      let directory = initializeDirectory();
+      const removed = directory.find(entry => entry.name === name);
+      directory = directory.filter(entry => entry.name !== name);
+      saveStoredDirectory(directory);
+      if (removed) {
+        const profiles = getStoredProfiles();
+        const key = `${removed.name}::${removed.id}`;
+        if (profiles[key]) {
+          delete profiles[key];
           saveStoredProfiles(profiles);
-          showMessage(successMessage, `✓ Photo saved for ${name}`);
-          photoUpload.value = '';
         }
-      };
-      reader.readAsDataURL(photoUpload.files[0]);
+      }
+      renderEmployeeDirectory();
+      populateEmployeeOptions();
+      showMessage(saveMessage, 'Employee removed from the directory.');
     });
 
-    // Filters
-    filterEmployee.addEventListener('change', buildAttendanceTable);
-    filterMonth.addEventListener('change', buildAttendanceTable);
-    refreshBtn.addEventListener('click', buildAttendanceTable);
-
-    // Print
-    printBtn.addEventListener('click', () => {
-      if (!isAdminLoggedIn) {
-        showMessage(errorMessage, '❌ Admin login required');
-        return;
+    startProfileCamera.addEventListener('click', async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+        profileStream = stream;
+        profileVideoPreview.srcObject = stream;
+        profileVideoPreview.style.display = 'block';
+        captureProfilePhoto.style.display = 'inline-block';
+      } catch (error) {
+        showMessage(errorMessage, 'Unable to access the camera. Please allow camera permissions or use the upload option.');
       }
-      window.print();
     });
 
-    // Export CSV
-    exportBtn.addEventListener('click', () => {
-      if (!isAdminLoggedIn) {
-        showMessage(errorMessage, '❌ Admin login required');
-        return;
-      }
-
-      const records = getStoredRecords();
-      const employee = filterEmployee.value;
-      const month = filterMonth.value;
-
-      const filtered = records.filter(r => {
-        if (employee !== 'all' && r.name !== employee) return false;
-        if (month && !r.date.startsWith(month)) return false;
-        return true;
-      });
-
-      if (filtered.length === 0) {
-        showMessage(errorMessage, '❌ No records to export');
-        return;
-      }
-
-      const headers = ['Date', 'Employee', 'User ID', 'Clock In', 'Clock Out', 'Shift', 'Mode', 'Notes'];
-      let csv = headers.join(',') + '\n';
-      filtered.forEach(r => {
-        csv += `"${r.date}","${r.name}","${r.userId}","${r.inTime}","${r.outTime}","${r.shiftCode}","${r.mode}","${r.notes || ''}"`  + '\n';
-      });
-
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `attendance-${month || 'all'}.csv`;
-      a.click();
-      window.URL.revokeObjectURL(url);
+    captureProfilePhoto.addEventListener('click', () => {
+      if (!profileStream) return;
+      const canvas = document.createElement('canvas');
+      canvas.width = profileVideoPreview.videoWidth;
+      canvas.height = profileVideoPreview.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(profileVideoPreview, 0, 0, canvas.width, canvas.height);
+      updateProfilePreview(canvas.toDataURL('image/jpeg', 0.8));
+      stopProfileCamera();
     });
 
-    // Clear All
-    deleteAllBtn.addEventListener('click', () => {
-      if (!isAdminLoggedIn) {
-        showMessage(errorMessage, '❌ Admin login required');
-        return;
+    profilePhotoUpload.addEventListener('change', async () => {
+      if (!profilePhotoUpload.files.length) return;
+      const dataUrl = await readFileAsDataUrl(profilePhotoUpload.files[0]);
+      updateProfilePreview(dataUrl);
+    });
+
+    profilePreview.addEventListener('click', () => showEmployeeDetails(employeeName.value));
+    selfiePreview.addEventListener('click', () => showEmployeeDetails(employeeName.value));
+
+    systemMode.addEventListener('change', updatePortalView);
+    employeeName.addEventListener('change', () => {
+      const entry = getDirectoryEntry(employeeName.value);
+      if (entry) {
+        shiftCode.value = entry.shiftCode;
+        // For staff mode, also set today's date
+        if (systemMode.value === 'Employee') {
+          attendanceDate.value = new Date().toISOString().slice(0,10);
+        }
       }
+    });
 
-      if (!confirm('Delete ALL attendance records? This cannot be undone!')) return;
-
+    clearEntries.addEventListener('click', () => {
+      if (!confirm('Clear all stored attendance records?')) return;
       localStorage.removeItem('attendanceRecords');
-      buildAttendanceTable();
-      showMessage(successMessage, '✓ All records cleared');
+      buildSummary();
+      showMessage(saveMessage, 'All attendance records cleared.');
     });
+
+    // Real-time clock
+    function updateClock() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('clockDisplay').textContent = `${hours}:${minutes}:${seconds}`;
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    populateEmployeeOptions();
+    updatePortalView();
+    buildSummary();
   </script>
 </body>
 </html>
