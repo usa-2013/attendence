@@ -167,6 +167,11 @@
       background: #312e81;
       transform: translateY(-1px);
     }
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+      transform: none;
+    }
     .summary-table {
       margin-top: 16px;
       width: 100%;
@@ -209,6 +214,40 @@
       color: #475569;
       text-align: center;
     }
+    .admin-badge {
+      display: inline-block;
+      background: #22c55e;
+      color: white;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      margin-left: 10px;
+    }
+    .print-section {
+      display: none;
+    }
+    @media print {
+      body {
+        background: white;
+      }
+      .page {
+        padding: 0;
+      }
+      .print-section {
+        display: block;
+      }
+      .no-print {
+        display: none;
+      }
+      table {
+        min-width: 100%;
+      }
+      .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+        page-break-inside: avoid;
+      }
+    }
     @media (max-width: 760px) {
       th,
       td {
@@ -219,10 +258,12 @@
 </head>
 <body>
   <div class="page">
-    <div class="hero">
+    <div class="hero no-print">
       <div>
-        <h1>July 2026 Maintenance Shift Schedule</h1>
-        <p>View assigned shifts, record attendance with selfie verification, and generate employee- date/month summaries. This system is designed to run on both admin and security office systems for secure attendance tracking.</p>
+        <h1>July 2026 Maintenance Shift Schedule
+          <span id="adminBadge" style="display:none;" class="admin-badge">Admin ✓</span>
+        </h1>
+        <p>View assigned shifts, record attendance with selfie verification, and generate employee-specific date/month summaries. This system is designed to run on both admin and security office systems for secure attendance tracking.</p>
         <div id="clockDisplay" style="font-size: 1.4rem; font-weight: 700; color: #4338ca; margin-top: 12px; font-family: 'Courier New', monospace; letter-spacing: 2px;">--:--:--</div>
       </div>
       <div class="nav-links">
@@ -327,7 +368,7 @@
           <label for="filterMode">Filter by</label>
           <select id="filterMode">
             <option value="all">All months</option>
-            <option value="date">date</option>
+            <option value="date">Specific date</option>
             <option value="month">Month</option>
           </select>
         </div>
@@ -343,12 +384,17 @@
         </div>
         <div id="monthFilter" style="display:none;">
           <label for="filterMonth">Month</label>
-          <input id="filterMonth" type="month" />
+          <input id="filterMonth" type="month" value="2026-07" />
         </div>
         <div>
           <label>&nbsp;</label>
           <button id="refreshSummary">Refresh summary</button>
         </div>
+      </div>
+
+      <div style="margin-bottom: 18px; display: flex; gap: 10px; flex-wrap: wrap;">
+        <button id="printButton" class="no-print">🖨️ Print attendance sheet</button>
+        <button id="exportCSV" class="no-print">📊 Export to CSV</button>
       </div>
 
       <div class="table-wrapper">
@@ -363,7 +409,7 @@
               <th>In</th>
               <th>Out</th>
               <th>System Mode</th>
-                      <th>Photo</th>
+              <th>Photo</th>
               <th>Notes</th>
             </tr>
           </thead>
@@ -372,6 +418,7 @@
       </div>
       <div class="note">
         <p class="small">Attendance entries are stored locally in the browser for demonstration. For production, connect this portal to a secure server and database.</p>
+        <p class="small"><strong>Current month filter:</strong> <span id="currentMonthDisplay">July 2026</span></p>
       </div>
     </div>
 
@@ -434,7 +481,7 @@
             <ul id="employeeListItems" style="margin:0; padding-left:18px; color:#1f2937;"></ul>
           </div>
           <button id="clearEntries" style="background:#dc2626; margin-top:18px;">Clear all attendance records</button>
-          <p class="note">Admin login for demo: <strong>admin / admin12345*</strong></p>
+          <p class="note">Admin login for demo: <strong>admin / admin123</strong></p>
         </div>
       </div>
     </div>
@@ -517,11 +564,16 @@
     const refreshSummary = document.getElementById('refreshSummary');
     const adminControls = document.getElementById('adminControls');
     const clearEntries = document.getElementById('clearEntries');
+    const printButton = document.getElementById('printButton');
+    const exportCSV = document.getElementById('exportCSV');
+    const adminBadge = document.getElementById('adminBadge');
+    const currentMonthDisplay = document.getElementById('currentMonthDisplay');
 
     let selfieDataURL = '';
     let activeStream = null;
     let profilePhotoDataURL = '';
     let profileStream = null;
+    let isAdminLoggedIn = false;
 
     const adminCredentials = {
       id: 'admin',
@@ -772,7 +824,6 @@
           resolve();
           return;
         }
-        // Small delay to ensure video is fully loaded
         setTimeout(() => {
           const canvas = document.createElement('canvas');
           canvas.width = videoPreview.videoWidth;
@@ -811,7 +862,6 @@
         return;
       }
 
-      // load selfie from camera or upload
       if (!selfieDataURL && photoUpload.files.length) {
         selfieDataURL = await readFileAsDataUrl(photoUpload.files[0]);
         selfiePreview.src = selfieDataURL;
@@ -838,7 +888,6 @@
         return;
       }
 
-      // Auto-fill in/out time if not provided based on attendance type
       const now = new Date();
       const nowTime = now.toTimeString().slice(0,5);
       if (type === 'In') {
@@ -847,29 +896,24 @@
         if (!outVal) outVal = nowTime;
       }
 
-      // Validate shift window but allow save (warn only)
       if (!isShiftTimeValid(shift, inVal || '00:00', outVal || '00:00')) {
         showMessage(errorMessage, 'Warning: selected shift does not match the captured in/out time. Record will be saved.');
       }
 
-      // For staff mode, check if we should update existing same-day record instead of creating new
       const existing = getStoredRecords();
       let existingRecord = null;
       
       if (mode === 'Employee') {
-        // Find existing record for today
         existingRecord = existing.find(
           r => r.name === name && r.date === date && r.mode === 'Employee'
         );
       }
 
       if (existingRecord) {
-        // Update existing record with Out time
         existingRecord.outTime = outVal || nowTime || '—';
-        existingRecord.photo = selfieDataURL; // Update photo
+        existingRecord.photo = selfieDataURL;
         if (noteValue) existingRecord.notes = noteValue;
       } else {
-        // Create new record
         const record = {
           name,
           userId: id,
@@ -919,7 +963,6 @@
         return;
       }
 
-      // Capture the selfie
       await captureSelfie();
 
       if (!selfieDataURL) {
@@ -928,25 +971,19 @@
       }
 
       if (isStaffMode) {
-        // Auto-fill required fields for staff auto-save
         const now = new Date();
         const todayDate = now.toISOString().slice(0, 10);
         const nowTime = now.toTimeString().slice(0, 5);
 
-        // Set date to today
         attendanceDate.value = todayDate;
-
-        // Set shift code from directory
         shiftCode.value = entry.shiftCode;
 
-        // Auto-detect In or Out based on previous records
         const records = getStoredRecords();
         const todayRecords = records.filter(
           r => r.name === selectedEmployee && r.date === todayDate
         );
 
         let type = 'In';
-        // If no record today, it's In; if one exists, it's Out
         if (todayRecords.length === 0) {
           type = 'In';
         } else {
@@ -954,7 +991,6 @@
         }
         attendanceType.value = type;
 
-        // Auto-fill time
         if (type === 'In') {
           inTime.value = nowTime;
           outTime.value = '';
@@ -963,7 +999,6 @@
           outTime.value = nowTime;
         }
 
-        // Auto-save immediately
         await saveAttendance.click();
       }
     });
@@ -977,12 +1012,26 @@
       localStorage.setItem('attendanceRecords', JSON.stringify(records));
     }
 
+    function getMonthName(monthString) {
+      const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                      'July', 'August', 'September', 'October', 'November', 'December'];
+      const [year, month] = monthString.split('-');
+      return `${months[parseInt(month) - 1]} ${year}`;
+    }
+
     function buildSummary() {
       const records = getStoredRecords();
       const mode = filterMode.value;
       const dateValue = filterDate.value;
       const monthValue = filterMonth.value;
       summaryTable.innerHTML = '';
+
+      // Update month display
+      if (monthValue) {
+        currentMonthDisplay.textContent = getMonthName(monthValue);
+      } else {
+        currentMonthDisplay.textContent = 'All months';
+      }
 
       const filtered = records.filter(record => {
         if (filterEmployee.value !== 'all' && record.name !== filterEmployee.value) {
@@ -1034,14 +1083,91 @@
     });
 
     filterEmployee.addEventListener('change', buildSummary);
+    filterDate.addEventListener('change', buildSummary);
+    filterMonth.addEventListener('change', buildSummary);
     refreshSummary.addEventListener('click', buildSummary);
+
+    // Print functionality
+    printButton.addEventListener('click', () => {
+      if (!isAdminLoggedIn) {
+        showMessage(errorMessage, 'Only admin can print attendance sheets. Please login to admin panel first.');
+        return;
+      }
+      window.print();
+    });
+
+    // CSV Export functionality
+    exportCSV.addEventListener('click', () => {
+      if (!isAdminLoggedIn) {
+        showMessage(errorMessage, 'Only admin can export attendance data. Please login to admin panel first.');
+        return;
+      }
+
+      const records = getStoredRecords();
+      const mode = filterMode.value;
+      const dateValue = filterDate.value;
+      const monthValue = filterMonth.value;
+
+      const filtered = records.filter(record => {
+        if (filterEmployee.value !== 'all' && record.name !== filterEmployee.value) {
+          return false;
+        }
+        if (mode === 'date' && dateValue) {
+          return record.date === dateValue;
+        }
+        if (mode === 'month' && monthValue) {
+          return record.date.startsWith(monthValue);
+        }
+        return true;
+      });
+
+      if (!filtered.length) {
+        showMessage(errorMessage, 'No records to export for the selected filter.');
+        return;
+      }
+
+      const headers = ['Date', 'Employee', 'User ID', 'Type', 'Shift', 'In Time', 'Out Time', 'Mode', 'Notes'];
+      const rows = filtered.map(r => [
+        r.date,
+        r.name,
+        r.userId,
+        r.type || '—',
+        r.shiftCode,
+        r.inTime,
+        r.outTime,
+        r.mode || '—',
+        r.notes || '—'
+      ]);
+
+      let csv = headers.join(',') + '\n';
+      rows.forEach(row => {
+        csv += row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',') + '\n';
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `attendance-${monthValue || 'all'}-${new Date().getTime()}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      showMessage(saveMessage, 'Attendance data exported to CSV successfully.');
+    });
+
     adminLogin.addEventListener('click', () => {
       if (adminId.value.trim() === adminCredentials.id && adminPassword.value === adminCredentials.password) {
+        isAdminLoggedIn = true;
         adminControls.style.display = 'block';
+        adminBadge.style.display = 'inline-block';
+        printButton.disabled = false;
+        exportCSV.disabled = false;
         renderEmployeeDirectory();
         populateEmployeeOptions();
         updatePortalView();
-        showMessage(saveMessage, 'Admin controls enabled.');
+        showMessage(saveMessage, 'Admin controls enabled. You can now print and export attendance data.');
       } else {
         showMessage(errorMessage, 'Incorrect admin ID or password.');
       }
@@ -1155,7 +1281,6 @@
       const entry = getDirectoryEntry(employeeName.value);
       if (entry) {
         shiftCode.value = entry.shiftCode;
-        // For staff mode, also set today's date
         if (systemMode.value === 'Employee') {
           attendanceDate.value = new Date().toISOString().slice(0,10);
         }
@@ -1182,6 +1307,12 @@
 
     populateEmployeeOptions();
     updatePortalView();
+    
+    // Set default month filter to July 2026
+    filterMonth.value = '2026-07';
+    filterMode.value = 'month';
+    monthFilter.style.display = 'block';
+    
     buildSummary();
   </script>
 </body>
